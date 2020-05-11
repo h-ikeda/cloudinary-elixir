@@ -26,9 +26,11 @@ jobs:
       - save_cache:
           key: build-cache-<< parameters.elixir >>-{{ .Branch }}
           paths: _build
-      - run: mix test
+      - run: mix test --cover
       - store_test_results:
           path: _build/test/lib/cloudinary
+      - store_artifacts:
+          path: cover
   format:
     docker:
       - image: circleci/elixir:latest
