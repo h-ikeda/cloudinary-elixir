@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  test and analyze:
+  analyze and test:
     parameters:
       elixir:
         type: string
@@ -27,6 +27,8 @@ jobs:
           key: build-cache-<< parameters.elixir >>-{{ .Branch }}
           paths: _build
       - run: mix test
+      - store_test_results:
+          path: _build/test/lib/cloudinary
   format:
     docker:
       - image: circleci/elixir:latest
@@ -34,9 +36,9 @@ jobs:
       - checkout
       - run: mix format --check-formatted
 workflows:
-  test and analyze:
+  analyze and test:
     jobs:
-      - test and analyze:
+      - analyze and test:
           matrix:
             parameters:
               elixir:

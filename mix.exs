@@ -29,7 +29,8 @@ defmodule Cloudinary.MixProject do
       {:mint, ">= 1.0.0"},
       {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0", only: :dev, runtime: false}
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+      {:junit_formatter, "~> 3.1", only: :test}
     ]
   end
 
