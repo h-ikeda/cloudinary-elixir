@@ -1,0 +1,52 @@
+version: 2
+commands:
+  test:
+    steps:
+      - checkout
+      - run: mix deps.unlock --all
+      - run: mix deps.get
+      - run: mix test
+jobs:
+  elixir-1.6:
+    docker:
+      - image: circleci/elixir:1.6
+    steps:
+      - test
+  elixir-1.7:
+    docker:
+      - image: circleci/elixir:1.7
+    steps:
+      - test
+  elixir-1.8:
+    docker:
+      - image: circleci/elixir:1.8
+    steps:
+      - test
+  elixir-1.9:
+    docker:
+      - image: circleci/elixir:1.9
+    steps:
+      - test
+  elixir-1.10:
+    docker:
+      - image: circleci/elixir:1.10
+    steps:
+      - test
+  format:
+    docker:
+      - image: circleci/elixir:latest
+    steps:
+      - checkout
+      - mix format --check-formatted
+workflows:
+  version: 2
+  test:
+    jobs:
+      - elixir-1.6
+      - elixir-1.7
+      - elixir-1.8
+      - elixir-1.9
+      - elixir-1.10
+  format:
+    jobs:
+      - format
