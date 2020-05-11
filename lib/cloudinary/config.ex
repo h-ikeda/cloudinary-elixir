@@ -35,7 +35,7 @@ defmodule Cloudinary.Config do
         cloud_name: "ghk789",
         api_key: "abc123",
         api_secret: "def456",
-        secure: false,
+        secure: true,
         cdn_subdomain: false,
         secure_distribution: nil,
         private_cdn: false,
@@ -58,7 +58,6 @@ defmodule Cloudinary.Config do
     |> put_userinfo(userinfo)
     |> put_secure_distribution(path)
     |> put_optional_configs(query)
-    |> Map.merge(if query, do: URI.decode_query(query), else: %{})
   end
 
   @spec put_userinfo(t, String.t() | nil) :: t
