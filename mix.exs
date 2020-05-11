@@ -11,7 +11,8 @@ defmodule Cloudinary.MixProject do
       source_url: "https://github.com/h-ikeda/cloudinary-elixir",
       name: "Cloudinary",
       docs: docs(),
-      package: package()
+      package: package(),
+      dialyzer: dialyzer()
     ]
   end
 
@@ -25,9 +26,9 @@ defmodule Cloudinary.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:castore, "~> 0.1.0"},
-      {:mint, "~> 1.0"},
-      {:jason, "~> 1.2"},
+      {:castore, ">= 0.0.0"},
+      {:mint, ">= 1.0.0"},
+      {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false}
     ]
@@ -51,6 +52,12 @@ defmodule Cloudinary.MixProject do
       links: %{
         "GitHub" => "https://github.com/h-ikeda/cloudinary-elixir"
       }
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_file: "plts/dialyzer.plt"
     ]
   end
 end
