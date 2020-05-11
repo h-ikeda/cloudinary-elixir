@@ -11,8 +11,7 @@ defmodule Cloudinary.MixProject do
       source_url: "https://github.com/h-ikeda/cloudinary-elixir",
       name: "Cloudinary",
       docs: docs(),
-      package: package(),
-      dialyzer: dialyzer()
+      package: package()
     ]
   end
 
@@ -52,12 +51,6 @@ defmodule Cloudinary.MixProject do
       links: %{
         "GitHub" => "https://github.com/h-ikeda/cloudinary-elixir"
       }
-    ]
-  end
-
-  defp dialyzer do
-    [
-      plt_file: "plts/dialyzer.plt"
     ]
   end
 end
