@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  test:
+  test and analyze:
     parameters:
       elixir:
         type: string
@@ -10,7 +10,22 @@ jobs:
       - checkout
       - run: mix deps.unlock --all
       - run: mix local.hex --force
+      - restore_cache:
+          keys:
+            - mix-cache-<< parameters.elixir >>-{{ .Branch }}
+            - mix-cache-<< parameters.elixir >>
       - run: mix deps.get
+      - save_cache:
+          key: mix-cache-<< parameters.elixir >>-{{ .Branch }}
+          paths: deps
+      - restore_cache:
+          keys:
+            - build-cache-<< parameters.elixir >>-{{ .Branch }}
+            - build-cache-<< parameters.elixir >>
+      - run: mix dialyzer
+      - save_cache:
+          key: build-cache-<< parameters.elixir >>-{{ .Branch }}
+          paths: _build
       - run: mix test
   format:
     docker:
@@ -19,9 +34,9 @@ jobs:
       - checkout
       - run: mix format --check-formatted
 workflows:
-  tests:
+  test and analyze:
     jobs:
-      - test:
+      - test and analyze:
           matrix:
             parameters:
               elixir:
