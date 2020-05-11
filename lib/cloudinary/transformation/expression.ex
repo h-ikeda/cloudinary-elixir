@@ -173,7 +173,7 @@ defmodule Cloudinary.Transformation.Expression do
   variable.
   """
   @spec build(atom) :: __MODULE__.t()
-  @spec build(number|String.t|[String.t])::__MODULE__.t
+  @spec build(number | String.t() | [String.t()]) :: __MODULE__.t()
   def build(variable) when variable in @predefined_numeric_variables do
     %__MODULE__{source: @predefined_numeric_variable_mappings[variable], numerable: true}
   end

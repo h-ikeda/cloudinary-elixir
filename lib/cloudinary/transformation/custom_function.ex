@@ -4,7 +4,7 @@ defmodule Cloudinary.Transformation.CustomFunction do
   ## Official documentation
   https://cloudinary.com/documentation/custom_functions
   https://cloudinary.com/documentation/image_transformation_reference#custom_function_parameter
-  
+
   ## Example
       iex> %#{__MODULE__}{type: :wasm, source: "example.wasm"} |> to_string()
       "fn_wasm:example.wasm"

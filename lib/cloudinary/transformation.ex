@@ -11,7 +11,7 @@ defmodule Cloudinary.Transformation do
 
   The `:transformation` field is a list which has transformation parameters. Transformation
   parameter can be a struct defined in one of modules under the `#{__MODULE__}`.
-  
+
   The list also can
   have a `t:keyword/0` or `t:map/0`, and/or `t:String.t/0`. When a `t:keyword/0` or `t:map/0` is
   given, it would be treated as a user-defined variables. When `t:String.t/0` is given, it will be
