@@ -1,5 +1,10 @@
 defmodule Cloudinary.Config do
   @moduledoc """
+  You can configure API requests by passing `#{__MODULE__}` struct to each function. To configure
+  with the cloudinary URL which can be found in the dashboard page of the cloudinary console, use
+  `parse_url/1` function.
+  ## Official documentation
+  https://cloudinary.com/documentation/cloudinary_sdks#configuration_parameters
   """
   @type t :: %__MODULE__{
           cloud_name: String.t(),
@@ -23,12 +28,7 @@ defmodule Cloudinary.Config do
             upload_preset: nil
 
   @doc """
-  Parses cloudinary configuration URL. You can find cloudinary URL in the dashboard page of the
-  cloudinary console.
-
-  Details of configuration parameters are documented here.
-  https://cloudinary.com/documentation/cloudinary_sdks#configuration_parameters
-
+  Parses cloudinary configuration URL.
   ## Example
       iex> Cloudinary.Config.parse_url("cloudinary://abc123:def456@ghk789?secure")
       %Cloudinary.Config{
@@ -44,7 +44,7 @@ defmodule Cloudinary.Config do
       }
   """
   @spec parse_url(String.t()) :: t
-  def parse_url("cloudinary:" <> url) do
+  def parse_url("cloudinary:" <> url = _cloudinary_url) do
     %URI{
       host: cloud_name,
       userinfo: userinfo,
@@ -83,17 +83,17 @@ defmodule Cloudinary.Config do
   defp put_optional_configs(%__MODULE__{} = config, query) when is_binary(query) do
     URI.query_decoder(query)
     |> Enum.reduce(config, fn
-      {"secure", secure}, c -> %{c | secure: query_is_truthy?(secure)}
-      {"cdn_subdomain", cdn_subdomain}, c -> %{c | cdn_subdomain: query_is_truthy?(cdn_subdomain)}
+      {"secure", secure}, c -> %{c | secure: param_is_truthy?(secure)}
+      {"cdn_subdomain", cdn_subdomain}, c -> %{c | cdn_subdomain: param_is_truthy?(cdn_subdomain)}
       {"cname", cname}, c -> %{c | cname: cname}
       {"upload_preset", upload_preset}, c -> %{c | upload_preset: upload_preset}
       _, c -> c
     end)
   end
 
-  @spec query_is_truthy?(String.t() | nil) :: boolean
-  defp query_is_truthy?(""), do: false
-  defp query_is_truthy?("false"), do: false
-  defp query_is_truthy?("0"), do: false
-  defp query_is_truthy?(_), do: true
+  @spec param_is_truthy?(String.t() | nil) :: boolean
+  defp param_is_truthy?(""), do: false
+  defp param_is_truthy?("false"), do: false
+  defp param_is_truthy?("0"), do: false
+  defp param_is_truthy?(_), do: true
 end
