@@ -9,6 +9,7 @@ defmodule Cloudinary.MixProject do
       # start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/h-ikeda/cloudinary-elixir",
+      name: "Cloudinary",
       docs: docs(),
       package: package()
     ]
@@ -38,7 +39,8 @@ defmodule Cloudinary.MixProject do
       extras: ["README.md"],
       before_closing_head_tag: fn :html ->
         "<script data-ad-client=\"ca-pub-3600741293730423\" async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>"
-      end
+      end,
+      nest_modules_by_prefix: [Cloudinary.Transformation]
     ]
   end
 
