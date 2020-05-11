@@ -5,3 +5,4 @@ elixir:
   - '1.8.2'
   - '1.7.4'
   - '1.6.6'
+before_install: mix deps.unlock --all
