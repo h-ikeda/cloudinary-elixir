@@ -14,7 +14,7 @@ jobs:
       - restore_cache:
           keys:
             - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}
-            - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-
+            - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}
             - mix-cache-{{ arch }}-<< parameters.elixir >>
       - run: mix deps.get --only test
       - save_cache:
@@ -40,6 +40,33 @@ jobs:
     steps:
       - checkout
       - run: mix format --check-formatted
+  docs:
+    docker:
+      - image: circleci/elixir:latest
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - restore_cache:
+          keys:
+            - mix-cache-{{ arch }}-dev-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - mix-cache-{{ arch }}-dev-{{ .Branch }}
+            - mix-cache-{{ arch }}-dev
+      - run: mix deps.get --only dev
+      - save_cache:
+          key: mix-cache-{{ arch }}-dev-{{ .Branch }}-{{ checksum "mix.lock" }}
+          paths: deps
+      - restore_cache:
+          keys:
+            - build-cache-{{ arch }}-dev-{{ .Branch }}-{{ .Revision }}
+            - build-cache-{{ arch }}-dev-{{ .Branch }}
+            - build-cache-{{ arch }}-dev
+      - run: mix docs
+      - run: find _build/ -type f | xargs md5sum | sort > /tmp/_build.sum
+      - save_cache:
+          key: build-cache-{{ arch }}-dev-{{ .Branch }}-{{ .Revision }}-{{ checksum "/tmp/_build.sum" }}
+          paths: _build
+      - store_artifacts:
+          path: doc
 workflows:
   analyze and test:
     jobs:
