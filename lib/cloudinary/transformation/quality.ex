@@ -18,6 +18,9 @@ defmodule Cloudinary.Transformation.Quality do
 
       iex> %#{__MODULE__}{value: :auto, level: :eco} |> to_string()
       "q_auto:eco"
+
+      iex> %#{__MODULE__}{value: 70, max_quantization: 80} |> to_string()
+      "q_70:qmax_80"
   """
   @type t :: %__MODULE__{
           value: 1..100 | :auto | :jpegmini,
