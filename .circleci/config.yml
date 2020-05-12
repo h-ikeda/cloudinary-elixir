@@ -16,7 +16,7 @@ jobs:
             - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}
             - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-
             - mix-cache-{{ arch }}-<< parameters.elixir >>
-      - run: mix deps.get
+      - run: mix deps.get --only test
       - save_cache:
           key: mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ checksum "mix.lock" }}
           paths: deps
