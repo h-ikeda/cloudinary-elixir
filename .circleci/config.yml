@@ -40,7 +40,7 @@ jobs:
     steps:
       - checkout
       - run: mix format --check-formatted
-  docs:
+  doc:
     docker:
       - image: circleci/elixir:latest
     steps:
@@ -82,3 +82,6 @@ workflows:
   format:
     jobs:
       - format
+  doc:
+    jobs:
+      - doc
