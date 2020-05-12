@@ -17,7 +17,7 @@ jobs:
             - mix-cache-{{ arch }}-<< parameters.elixir >>
       - run: mix deps.get
       - save_cache:
-          key: mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ .BuildNum }}
+          key: mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ checksum "mix.lock" }}
           paths: deps
       - restore_cache:
           keys:
@@ -25,8 +25,9 @@ jobs:
             - build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}
             - build-cache-{{ arch }}-<< parameters.elixir >>
       - run: mix dialyzer
+      - run: find _build/ -type f | xargs crc32 | sort > /tmp/_build.sum
       - save_cache:
-          key: build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ .BuildNum }}
+          key: build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ checksum "/tmp/_build.sum" }}
           paths: _build
       - run: mix test --cover --formatter JUnitFormatter
       - store_test_results:
