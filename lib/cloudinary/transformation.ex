@@ -27,28 +27,17 @@ defmodule Cloudinary.Transformation do
       iex> alias #{__MODULE__}
       ...> %Transformation{
       ...>   transformation: [
-      ...>     %Transformation.Width{value: 400},
-      ...>     %Transformation.Height{value: 260},
-      ...>     %Transformation.Crop{mode: :crop},
-      ...>     %Transformation.Radius{pixels: [20]}
-      ...>   ]
-      ...> }
-      ...> |> to_string()
-      "w_400,h_260,c_crop,r_20"
-      
-      iex> alias #{__MODULE__}
-      ...> %Transformation{
-      ...>   transformation: [
       ...>     %Transformation.Overlay{public_id: "horses"},
       ...>     %Transformation.Width{value: 220},
       ...>     %Transformation.Height{value: 140},
       ...>     %Transformation.Crop{mode: :fill},
       ...>     %Transformation.Y{value: 140},
-      ...>     %Transformation.X{value: -110}
+      ...>     %Transformation.X{value: -110},
+      ...>     %Transformation.Radius{pixels: [20]}
       ...>   ]
       ...> }
       ...> |> to_string()
-      "l_horses,w_220,h_140,c_fill,y_140,x_-110"
+      "l_horses,w_220,h_140,c_fill,y_140,x_-110,r_20"
       
       iex> alias #{__MODULE__}
       ...> %Transformation{
@@ -79,6 +68,16 @@ defmodule Cloudinary.Transformation do
       ...> }
       ...> |> to_string()
       "if_ils_gt_0.5,w_120,h_150,c_pad"
+
+      iex> alias #{__MODULE__}
+      ...> %Transformation{
+      ...>   transformation: [
+      ...>     "w_$small,h_$medium,c_$mode",
+      ...>     [small: 90, medium: 135, mode: "crop"]
+      ...>   ]
+      ...> }
+      ...> |> to_string()
+      "$small_90,$medium_135,$mode_!crop!,w_$small,h_$medium,c_$mode"
   """
   @type t :: %__MODULE__{
           if: __MODULE__.Expression.as_boolean() | nil,
@@ -141,7 +140,7 @@ defmodule Cloudinary.Transformation do
       |> Enum.map(fn
         raw_transformation when is_binary(raw_transformation) -> raw_transformation
         %_{} = param -> param
-        variables -> Enum.map(variables, fn {k, v} -> "$#{k}_#{v}" end)
+        variables -> Enum.map(variables, fn {k, v} -> "$#{k}_#{@for.Expression.build(v)}" end)
       end)
       |> Enum.sort(fn
         raw_transformation, _ when is_binary(raw_transformation) -> false
