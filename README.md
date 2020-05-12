@@ -1,4 +1,4 @@
-[![h-ikeda](https://circleci.com/gh/h-ikeda/cloudinary-elixir.svg?style=svg)](https://app.circleci.com/pipelines/github/h-ikeda/cloudinary-elixir)
+[![h-ikeda](https://circleci.com/gh/h-ikeda/cloudinary-elixir.svg?style=svg)](https://app.circleci.com/pipelines/github/h-ikeda/cloudinary-elixir) [![codecov](https://codecov.io/gh/h-ikeda/cloudinary-elixir/branch/master/graph/badge.svg)](https://codecov.io/gh/h-ikeda/cloudinary-elixir)
 # Cloudinary
 
 [Cloudinary](https://cloudinary.com) is a cloud service that helps to manage
