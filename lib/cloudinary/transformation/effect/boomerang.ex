@@ -12,6 +12,6 @@ defmodule Cloudinary.Transformation.Effect.Boomerang do
   defstruct []
 
   defimpl String.Chars do
-    def to_string(_), do: "e_reverse"
+    def to_string(_), do: "e_boomerang"
   end
 end

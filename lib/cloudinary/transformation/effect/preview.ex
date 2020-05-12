@@ -4,8 +4,8 @@ defmodule Cloudinary.Transformation.Effect.Preview do
   ## Official documentation
   https://cloudinary.com/documentation/video_transformation_reference#adding_video_effects
   ## Example
-      iex> %#{__MODULE__}{duration: 12.0, max_segments: 3, min_segment_duration: 3} |> to_string()
-      "e_previes:duration_12.0:max_seg_3:min_seg_dur_3"
+      iex> %#{__MODULE__}{duration: 12.0, max_segments: 3, min_segment_duration: 3.0} |> to_string()
+      "e_preview:duration_12.0:max_seg_3:min_seg_dur_3.0"
   """
   @type t :: %__MODULE__{duration: float, max_segments: pos_integer, min_segment_duration: float}
   defstruct duration: 5.0, max_segments: 1, min_segment_duration: 5.0

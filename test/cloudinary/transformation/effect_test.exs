@@ -1,6 +1,7 @@
 defmodule Cloudinary.Transformation.EffectTest do
   use ExUnit.Case
   alias Cloudinary.Transformation.Effect
+  doctest Effect.Accelerate
   doctest Effect.AdvRedeye
   doctest Effect.AntiRemoval
   doctest Effect.Art
@@ -14,14 +15,17 @@ defmodule Cloudinary.Transformation.EffectTest do
   doctest Effect.Blur
   doctest Effect.BlurFaces
   doctest Effect.BlurRegion
+  doctest Effect.Boomerang
   doctest Effect.Brightness
   doctest Effect.BrightnessHsb
   doctest Effect.Cartoonify
   doctest Effect.Colorize
   doctest Effect.Contrast
   doctest Effect.CutOut
+  doctest Effect.Deshake
   doctest Effect.Displace
   doctest Effect.Distort
+  doctest Effect.Distort.Arc
   doctest Effect.Fade
   doctest Effect.FillLight
   doctest Effect.Gamma
@@ -34,6 +38,7 @@ defmodule Cloudinary.Transformation.EffectTest do
   doctest Effect.MakeTransparent
   doctest Effect.Multiply
   doctest Effect.Negate
+  doctest Effect.Noise
   doctest Effect.OilPaint
   doctest Effect.OpacityThreshold
   doctest Effect.OrderedDither
@@ -42,10 +47,13 @@ defmodule Cloudinary.Transformation.EffectTest do
   doctest Effect.Pixelate
   doctest Effect.PixelateFaces
   doctest Effect.PixelateRegion
+  doctest Effect.Preview
+  doctest Effect.Progressbar
   doctest Effect.Recolor
   doctest Effect.Red
   doctest Effect.Redeye
   doctest Effect.ReplaceColor
+  doctest Effect.Reverse
   doctest Effect.Saturation
   doctest Effect.Screen
   doctest Effect.Sepia
@@ -55,10 +63,12 @@ defmodule Cloudinary.Transformation.EffectTest do
   doctest Effect.SimulateColorblind
   doctest Effect.StyleTransfer
   doctest Effect.Tint
+  doctest Effect.Transition
   doctest Effect.Trim
   doctest Effect.UnsharpMask
   doctest Effect.Vectorize
   doctest Effect.Vibrance
   doctest Effect.ViesusCorrect
   doctest Effect.Vignette
+  doctest Effect.Volume
 end
