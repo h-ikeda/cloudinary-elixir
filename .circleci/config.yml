@@ -25,7 +25,7 @@ jobs:
             - build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}
             - build-cache-{{ arch }}-<< parameters.elixir >>
       - run: mix dialyzer
-      - run: find _build/ -type f | xargs crc32 | sort > /tmp/_build.sum
+      - run: find _build/ -type f | xargs md5sum | sort > /tmp/_build.sum
       - save_cache:
           key: build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ checksum "/tmp/_build.sum" }}
           paths: _build
