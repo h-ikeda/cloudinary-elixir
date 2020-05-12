@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  codecov: codecov/codecov@volatile
 jobs:
   analyze and test:
     parameters:
@@ -34,8 +32,7 @@ jobs:
       - run: mix test --cover --formatter JUnitFormatter
       - store_test_results:
           path: _build/test/lib/cloudinary
-      - codecov/upload:
-          file: coverage.xml
+      - run: bash <(curl -s https://codecov.io/bash)
   format:
     docker:
       - image: circleci/elixir:latest
