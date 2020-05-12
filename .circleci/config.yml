@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  codecov: codecov/codecov
+  codecov: codecov/codecov@volatile
 jobs:
   analyze and test:
     parameters:
