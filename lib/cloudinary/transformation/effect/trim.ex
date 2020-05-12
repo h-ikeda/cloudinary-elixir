@@ -7,6 +7,9 @@ defmodule Cloudinary.Transformation.Effect.Trim do
       iex> %#{__MODULE__}{color_similarity: 30, color_override: "white"} |> to_string()
       "e_trim:30:white"
 
+      iex> %#{__MODULE__}{color_similarity: 30, color_override: 0xE8D9AA} |> to_string()
+      "e_trim:30:rgb:e8d9aa"
+
       iex> %#{__MODULE__}{color_similarity: 40} |> to_string()
       "e_trim:40"
   """
@@ -19,7 +22,8 @@ defmodule Cloudinary.Transformation.Effect.Trim do
   defimpl String.Chars do
     def to_string(%{color_override: color_override} = trim)
         when color_override in 0..0xFFFFFFFF do
-      "#{%{trim | color_override: nil}}:rgb:#{Integer.to_string(color_override, 16)}"
+      "#{%{trim | color_override: nil}}" <>
+        ":rgb:#{Integer.to_string(color_override, 16) |> String.downcase()}"
     end
 
     def to_string(%{color_override: color_override} = trim) when is_binary(color_override) do

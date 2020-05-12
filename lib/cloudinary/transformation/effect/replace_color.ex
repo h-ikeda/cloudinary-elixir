@@ -12,6 +12,9 @@ defmodule Cloudinary.Transformation.Effect.ReplaceColor do
 
       iex> %#{__MODULE__}{to: "silver", tolerance: 60, from: 0x89B8ED} |> to_string()
       "e_replace_color:silver:60:89b8ed"
+
+      iex> %#{__MODULE__}{to: "gray", tolerance: 60, from: "blue"} |> to_string()
+      "e_replace_color:gray:60:blue"
   """
   @type t :: %__MODULE__{
           to: 0..0xFFFFFFFF | String.t(),
