@@ -26,7 +26,7 @@ jobs:
       - save_cache:
           key: build-cache-<< parameters.elixir >>-{{ .Branch }}
           paths: _build
-      - run: mix test --cover
+      - run: mix test --cover --formatter JUnitFormatter
       - store_test_results:
           path: _build/test/lib/cloudinary
       - store_artifacts:
