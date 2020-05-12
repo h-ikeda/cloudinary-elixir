@@ -7,6 +7,9 @@ defmodule Cloudinary.Transformation.ColorSpace do
   ## Example
       iex> %#{__MODULE__}{preset: :keep_cmyk} |> to_string()
       "cs_keep_cmyk"
+
+      iex> %#{__MODULE__}{preset: :icc, public_id: "uploaded.icc"} |> to_string()
+      "cs_icc:uploaded.icc"
   """
   @type t ::
           %__MODULE__{
