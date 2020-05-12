@@ -40,5 +40,11 @@ defmodule Cloudinary.ConfigTest do
                cdn_subdomain: true
              }
     end
+
+    test "ignores unknown options in query string" do
+      assert parse_url("cloudinary://cloud_name?ignored=ignored_option") == %Config{
+               cloud_name: "cloud_name"
+             }
+    end
   end
 end
