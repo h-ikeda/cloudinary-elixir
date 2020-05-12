@@ -186,6 +186,9 @@ defmodule Cloudinary.Transformation do
 
       iex> #{__MODULE__}.expression(:context["productType"] not in :page_names)
       %#{__MODULE__}.Expression{booleanable: true, source: "ctx:!productType!_nin_pgnames"}
+
+      iex> #{__MODULE__}.expression(:context["name"] != "John")
+      %#{__MODULE__}.Expression{booleanable: true, source: "ctx:!name!_ne_!John!"}
   """
   @spec expression(Macro.t()) :: Macro.t()
   defmacro expression(ast) do
