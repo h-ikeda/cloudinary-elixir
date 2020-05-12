@@ -67,6 +67,18 @@ defmodule Cloudinary.Transformation do
       ...> }
       ...> |> to_string()
       "l_text:Parisienne_35_bold:Memories%20from%20our%20trip,co_rgb:990c47,y_155"
+
+      iex> alias #{__MODULE__}
+      ...> %Transformation{
+      ...>   if: Transformation.expression(:illustrative_likelihood > 0.5),
+      ...>   transformation: [
+      ...>     %Transformation.Width{value: 120},
+      ...>     %Transformation.Height{value: 150},
+      ...>     %Transformation.Crop{mode: :pad}
+      ...>   ]
+      ...> }
+      ...> |> to_string()
+      "if_ils_gt_0.5,w_120,h_150,c_pad"
   """
   @type t :: %__MODULE__{
           if: __MODULE__.Expression.as_boolean() | nil,
