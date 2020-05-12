@@ -12,7 +12,8 @@ defmodule Cloudinary.MixProject do
       name: "Cloudinary",
       docs: docs(),
       package: package(),
-      preferred_cli_env: [dialyzer: :test]
+      preferred_cli_env: [dialyzer: :test],
+      test_coverage: test_coverage()
     ]
   end
 
@@ -31,7 +32,8 @@ defmodule Cloudinary.MixProject do
       {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :test, runtime: false},
-      {:junit_formatter, "~> 3.1", only: :test}
+      {:junit_formatter, "~> 3.1", only: :test},
+      {:covertool, "~> 2.0", only: :test}
     ]
   end
 
@@ -54,5 +56,13 @@ defmodule Cloudinary.MixProject do
         "GitHub" => "https://github.com/h-ikeda/cloudinary-elixir"
       }
     ]
+  end
+
+  defp test_coverage do
+    if System.get_env("CI") do
+      [tool: :covertool]
+    else
+      []
+    end
   end
 end
