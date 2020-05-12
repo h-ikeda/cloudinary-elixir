@@ -10,6 +10,7 @@ jobs:
       - checkout
       - run: mix deps.unlock --all
       - run: mix local.hex --force
+      - run: mix local.rebar --force
       - restore_cache:
           keys:
             - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}
