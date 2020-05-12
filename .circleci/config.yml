@@ -12,19 +12,21 @@ jobs:
       - run: mix local.hex --force
       - restore_cache:
           keys:
-            - mix-cache-<< parameters.elixir >>-{{ .Branch }}
-            - mix-cache-<< parameters.elixir >>
+            - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}
+            - mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-
+            - mix-cache-{{ arch }}-<< parameters.elixir >>
       - run: mix deps.get
       - save_cache:
-          key: mix-cache-<< parameters.elixir >>-{{ .Branch }}
+          key: mix-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ .BuildNum }}
           paths: deps
       - restore_cache:
           keys:
-            - build-cache-<< parameters.elixir >>-{{ .Branch }}
-            - build-cache-<< parameters.elixir >>
+            - build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}
+            - build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}
+            - build-cache-{{ arch }}-<< parameters.elixir >>
       - run: mix dialyzer
       - save_cache:
-          key: build-cache-<< parameters.elixir >>-{{ .Branch }}
+          key: build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ .BuildNum }}
           paths: _build
       - run: mix test --cover --formatter JUnitFormatter
       - store_test_results:
