@@ -11,7 +11,8 @@ defmodule Cloudinary.MixProject do
       source_url: "https://github.com/h-ikeda/cloudinary-elixir",
       name: "Cloudinary",
       docs: docs(),
-      package: package()
+      package: package(),
+      preferred_cli_env: [dialyzer: :test]
     ]
   end
 
@@ -29,7 +30,7 @@ defmodule Cloudinary.MixProject do
       {:mint, ">= 1.0.0"},
       {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0", only: :test, runtime: false},
       {:junit_formatter, "~> 3.1", only: :test}
     ]
   end
