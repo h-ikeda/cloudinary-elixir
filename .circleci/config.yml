@@ -60,7 +60,7 @@ jobs:
             - build-cache-{{ arch }}-dev-{{ .Branch }}-{{ .Revision }}
             - build-cache-{{ arch }}-dev-{{ .Branch }}
             - build-cache-{{ arch }}-dev
-      - run: mix docs
+      - run: mix docs --formatter html
       - run: find _build/ -type f | xargs md5sum | sort > /tmp/_build.sum
       - save_cache:
           key: build-cache-{{ arch }}-dev-{{ .Branch }}-{{ .Revision }}-{{ checksum "/tmp/_build.sum" }}
