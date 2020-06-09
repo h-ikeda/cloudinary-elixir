@@ -40,11 +40,7 @@ defmodule Cloudinary.MixProject do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md"],
-      before_closing_head_tag: fn _ ->
-        "<script data-ad-client=\"ca-pub-3600741293730423\" async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>"
-      end,
-      nest_modules_by_prefix: [Cloudinary.Transformation]
+      extras: ["README.md"]
     ]
   end
 
