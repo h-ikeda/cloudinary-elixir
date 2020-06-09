@@ -1,24 +1,28 @@
 defmodule Cloudinary.Transformation.Angle do
-  @moduledoc """
-  Representing the `angle` parameter of transformation.
-  ## Official documentation
-  https://cloudinary.com/documentation/image_transformation_reference#angle_parameter
-  https://cloudinary.com/documentation/video_transformation_reference#rotating_and_rounding_videos
-  ## Example
-      iex> %#{__MODULE__}{degrees: 5} |> to_string()
-      "a_5"
+  @moduledoc false
+  defguardp is_mode(mode) when mode in [:auto_right, :auto_left, :ignore, :vflip, :hflip]
 
-      iex> %#{__MODULE__}{modes: [:auto_right, :hflip]} |> to_string()
-      "a_auto_right.hflip"
-  """
-  @type t :: %__MODULE__{
-          degrees: integer,
-          modes: [:auto_right | :auto_left | :ignore | :vflip | :hflip]
-        }
-  defstruct degrees: 0, modes: []
+  @spec to_url_string(Cloudinary.Transformation.angle()) :: String.t()
+  def to_url_string(angle) when is_number(angle) or is_mode(angle), do: "#{angle}"
+  def to_url_string([mode]) when is_mode(mode), do: "#{mode}"
 
-  defimpl String.Chars do
-    def to_string(%{modes: [], degrees: degrees}) when is_integer(degrees), do: "a_#{degrees}"
-    def to_string(%{modes: modes}) when is_list(modes), do: "a_#{Enum.join(modes, ".")}"
+  def to_url_string([mode1, mode2]) when is_mode(mode1) and is_mode(mode2) do
+    "#{mode1}.#{mode2}"
+  end
+
+  def to_url_string([mode1, mode2, mode3])
+      when is_mode(mode1) and is_mode(mode2) and is_mode(mode3) do
+    "#{mode1}.#{mode2}.#{mode3}"
+  end
+
+  def to_url_string([mode1, mode2, mode3, mode4])
+      when is_mode(mode1) and is_mode(mode2) and is_mode(mode3) and is_mode(mode4) do
+    "#{mode1}.#{mode2}.#{mode3}.#{mode4}"
+  end
+
+  def to_url_string([mode1, mode2, mode3, mode4, mode5])
+      when is_mode(mode1) and
+             is_mode(mode2) and is_mode(mode3) and is_mode(mode4) and is_mode(mode5) do
+    "#{mode1}.#{mode2}.#{mode3}.#{mode4}.#{mode5}"
   end
 end

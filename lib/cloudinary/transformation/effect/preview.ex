@@ -1,21 +1,42 @@
 defmodule Cloudinary.Transformation.Effect.Preview do
-  @moduledoc """
-  Representing the effect that generates a preview of the video.
-  ## Official documentation
-  https://cloudinary.com/documentation/video_transformation_reference#adding_video_effects
-  ## Example
-      iex> %#{__MODULE__}{duration: 12.0, max_segments: 3, min_segment_duration: 3.0} |> to_string()
-      "e_preview:duration_12.0:max_seg_3:min_seg_dur_3.0"
-  """
-  @type t :: %__MODULE__{duration: float, max_segments: pos_integer, min_segment_duration: float}
-  defstruct duration: 5.0, max_segments: 1, min_segment_duration: 5.0
+  @moduledoc false
+  defguardp is_duration(duration) when is_number(duration) and duration > 0
+  defguardp is_max_seg(max_seg) when is_integer(max_seg) and max_seg > 0
 
-  defimpl String.Chars do
-    def to_string(%{duration: dur, max_segments: max_seg, min_segment_duration: min_seg_dur})
-        when is_float(dur) and dur > 0 and
-               is_integer(max_seg) and max_seg > 0 and
-               is_float(min_seg_dur) and min_seg_dur > 0 do
-      "e_preview:duration_#{dur}:max_seg_#{max_seg}:min_seg_dur_#{min_seg_dur}"
-    end
+  @spec to_url_string(%{
+          optional(:duration) => number,
+          optional(:max_segments) => pos_integer,
+          optional(:min_segment_duration) => number
+        }) :: String.t()
+  def to_url_string(%{duration: duration, max_segments: max_seg, min_segment_duration: min_dur})
+      when is_duration(duration) and is_max_seg(max_seg) and is_duration(min_dur) do
+    "preview:duration_#{duration}:max_seg_#{max_seg}:min_seg_dur_#{min_dur}"
+  end
+
+  def to_url_string(%{duration: duration, max_segments: max_seg})
+      when is_duration(duration) and is_max_seg(max_seg) do
+    "preview:duration_#{duration}:max_seg_#{max_seg}"
+  end
+
+  def to_url_string(%{duration: duration, min_segment_duration: min_dur})
+      when is_duration(duration) and is_duration(min_dur) do
+    "preview:duration_#{duration}:min_seg_dur_#{min_dur}"
+  end
+
+  def to_url_string(%{max_segments: max_seg, min_segment_duration: min_dur})
+      when is_max_seg(max_seg) and is_duration(min_dur) do
+    "preview:max_seg_#{max_seg}:min_seg_dur_#{min_dur}"
+  end
+
+  def to_url_string(%{duration: duration}) when is_duration(duration) do
+    "preview:duration_#{duration}"
+  end
+
+  def to_url_string(%{max_segments: max_seg}) when is_max_seg(max_seg) do
+    "preview:max_seg_#{max_seg}"
+  end
+
+  def to_url_string(%{min_segment_duration: min_dur}) when is_duration(min_dur) do
+    "preview:min_seg_dur_#{min_dur}"
   end
 end

@@ -1,44 +1,4 @@
 defmodule Cloudinary.TransformationTest do
   use ExUnit.Case
   doctest Cloudinary.Transformation
-  doctest Cloudinary.Transformation.Angle
-  doctest Cloudinary.Transformation.AspectRatio
-  doctest Cloudinary.Transformation.AudioCodec
-  doctest Cloudinary.Transformation.AudioFrequency
-  doctest Cloudinary.Transformation.Background
-  doctest Cloudinary.Transformation.BitRate
-  doctest Cloudinary.Transformation.Border
-  doctest Cloudinary.Transformation.Color
-  doctest Cloudinary.Transformation.ColorSpace
-  doctest Cloudinary.Transformation.Crop
-  doctest Cloudinary.Transformation.CustomFunction
-  doctest Cloudinary.Transformation.CustomPreFunction
-  doctest Cloudinary.Transformation.DefaultImage
-  doctest Cloudinary.Transformation.Delay
-  doctest Cloudinary.Transformation.Density
-  doctest Cloudinary.Transformation.DevicePixelRatio
-  doctest Cloudinary.Transformation.Duration
-  doctest Cloudinary.Transformation.Effect
-  doctest Cloudinary.Transformation.EndOffset
-  doctest Cloudinary.Transformation.Flags
-  doctest Cloudinary.Transformation.FetchFormat
-  doctest Cloudinary.Transformation.Fps
-  doctest Cloudinary.Transformation.Gravity
-  doctest Cloudinary.Transformation.Height
-  doctest Cloudinary.Transformation.KeyframeInterval
-  doctest Cloudinary.Transformation.Opacity
-  doctest Cloudinary.Transformation.Overlay
-  doctest Cloudinary.Transformation.Page
-  doctest Cloudinary.Transformation.Quality
-  doctest Cloudinary.Transformation.Radius
-  doctest Cloudinary.Transformation.StartOffset
-  doctest Cloudinary.Transformation.StreamingProfile
-  doctest Cloudinary.Transformation.Transformation
-  doctest Cloudinary.Transformation.Underlay
-  doctest Cloudinary.Transformation.VideoCodec
-  doctest Cloudinary.Transformation.VideoSampling
-  doctest Cloudinary.Transformation.Width
-  doctest Cloudinary.Transformation.X
-  doctest Cloudinary.Transformation.Y
-  doctest Cloudinary.Transformation.Zoom
 end
