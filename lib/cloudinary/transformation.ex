@@ -764,6 +764,12 @@ defmodule Cloudinary.Transformation do
           | %{name: String.t() | [String]}
   defp encode({:page, page}) when is_integer(page) or is_binary(page), do: "pg_#{page}"
   defp encode({:page, first..last}), do: "pg_#{first}-#{last}"
+  defp encode({:page, name: name}), do: encode({:page, %{name: name}})
+  defp encode({:page, %{name: name}}) when is_binary(name), do: "pg_name:#{name}"
+
+  defp encode({:page, %{name: names}}) when is_list(names) do
+    "pg_name:#{Enum.map_join(names, ":", fn name when is_binary(name) -> name end)}"
+  end
 
   defp encode({:page, pages}) when is_list(pages) do
     "pg_#{
@@ -772,13 +778,6 @@ defmodule Cloudinary.Transformation do
         first..last -> "#{first}-#{last}"
       end)
     }"
-  end
-
-  defp encode({:page, name: name}), do: encode({:page, %{name: name}})
-  defp encode({:page, %{name: name}}) when is_binary(name), do: "pg_name:#{name}"
-
-  defp encode({:page, %{name: names}}) when is_list(names) do
-    "pg_name:#{Enum.map_join(names, ":", fn name when is_binary(name) -> name end)}"
   end
 
   @typedoc """
