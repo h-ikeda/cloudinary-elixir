@@ -381,13 +381,13 @@ defmodule Cloudinary.Transformation do
   * https://cloudinary.com/documentation/custom_functions  
   * https://cloudinary.com/documentation/image_transformation_reference#custom_function_parameter
   ## Example
-      iex> #{__MODULE__}.to_url_string(custom_function: [type: :wasm, source: "example.wasm"])
+      iex> #{__MODULE__}.to_url_string(custom_function: [function_type: :wasm, source: "example.wasm"])
       "fn_wasm:example.wasm"
 
-      iex> #{__MODULE__}.to_url_string(custom_function: [type: :remote, source: "https://example.com/fun"])
+      iex> #{__MODULE__}.to_url_string(custom_function: [function_type: :remote, source: "https://example.com/fun"])
       "fn_remote:aHR0cHM6Ly9leGFtcGxlLmNvbS9mdW4="
 
-      iex> #{__MODULE__}.to_url_string(custom_pre_function: [type: :remote, source: "https://example.com/fun"])
+      iex> #{__MODULE__}.to_url_string(custom_pre_function: [function_type: :remote, source: "https://example.com/fun"])
       "fn_pre_remote:aHR0cHM6Ly9leGFtcGxlLmNvbS9mdW4="
   """
   @type custom_function :: keyword | map
@@ -400,7 +400,7 @@ defmodule Cloudinary.Transformation do
     "fn_#{__MODULE__.CustomFunction.to_url_string(options)}"
   end
 
-  defp encode({:custom_pre_function, %{type: :remote} = options}) when is_map(options) do
+  defp encode({:custom_pre_function, %{function_type: :remote} = options}) when is_map(options) do
     "fn_pre_#{__MODULE__.CustomFunction.to_url_string(options)}"
   end
 
