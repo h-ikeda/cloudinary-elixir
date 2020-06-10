@@ -456,7 +456,9 @@ defmodule Cloudinary.Transformation do
       "dpr_3.0"
   """
   @type device_pixel_ratio :: pos_number | :auto
-  defp encode({:device_pixel_ratio, dpr}) when is_number(dpr) and dpr > 0, do: "dpr_#{dpr}"
+  defp encode({:device_pixel_ratio, dpr}) when (is_number(dpr) and dpr > 0) or dpr == :auto do
+    "dpr_#{dpr}"
+  end
 
   @typedoc """
   The duration parameter of transformation.
