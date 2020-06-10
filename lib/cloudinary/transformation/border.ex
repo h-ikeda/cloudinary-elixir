@@ -1,8 +1,8 @@
 defmodule Cloudinary.Transformation.Border do
   @moduledoc false
   import Cloudinary.Transformation.Color
-  defguard is_width(width) when is_number(width) and width > 0
-  defguard is_style(style) when style in [:solid]
+  defguardp is_width(width) when is_number(width) and width > 0
+  defguardp is_style(style) when style in [:solid]
 
   @spec to_url_string(%{
           optional(:width) => pos_integer | float,
