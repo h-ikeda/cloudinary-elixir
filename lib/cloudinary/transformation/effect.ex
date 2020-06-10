@@ -1502,7 +1502,7 @@ defmodule Cloudinary.Transformation.Effect do
   @type vibrance :: :vibrance | {:vibrance, -100..100 | float}
   def to_url_string(:vibrance), do: "vibrance"
 
-  def to_url_string({:vibrance, strength}) when strength <= 100 and strength >= 100 do
+  def to_url_string({:vibrance, strength}) when strength <= 100 and strength >= -100 do
     "vibrance:#{strength}"
   end
 
