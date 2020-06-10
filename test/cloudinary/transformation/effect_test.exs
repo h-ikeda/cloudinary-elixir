@@ -818,6 +818,15 @@ defmodule Cloudinary.Transformation.EffectTest do
       assert Effect.to_url_string({:tint, color: "blue", amount: 85}) == "tint:85:blue"
     end
 
+    test "converts the :tint with hex triplet color position and amount options" do
+      assert Effect.to_url_string({:tint, color: {'01fe88', 32}, amount: 85}) ==
+               "tint:85:rgb:01fe88:32p"
+    end
+
+    test "converts the :tint with named color position and amount options" do
+      assert Effect.to_url_string({:tint, color: {"blue", 64}, amount: 85}) == "tint:85:blue:64p"
+    end
+
     test "converts the :tint with list of colors and amount options" do
       assert Effect.to_url_string({:tint, color: ["blue", '01fe88'], amount: 85}) ==
                "tint:85:blue:rgb:01fe88"
@@ -836,6 +845,16 @@ defmodule Cloudinary.Transformation.EffectTest do
     test "converts the :tint with equalize, named color and amount options" do
       assert Effect.to_url_string({:tint, equalize: true, color: "blue", amount: 85}) ==
                "tint:equalize:85:blue"
+    end
+
+    test "converts the :tint with equalize, hex triplet color position and amount options" do
+      assert Effect.to_url_string({:tint, equalize: true, color: {'01fe88', 32}, amount: 85}) ==
+               "tint:equalize:85:rgb:01fe88:32p"
+    end
+
+    test "converts the :tint with equalize, named color position and amount options" do
+      assert Effect.to_url_string({:tint, equalize: true, color: {"blue", 64}, amount: 85}) ==
+               "tint:equalize:85:blue:64p"
     end
 
     test "converts the :tint with equalize, list of colors and equalize options" do
