@@ -14,7 +14,7 @@ defmodule Cloudinary.Transformation.BitRate do
   end
 
   defp shorten(bit_rate) when is_float(bit_rate) do
-    Float.to_string(bit_rate)
+    :erlang.float_to_binary(bit_rate, [:compact, decimals: 20])
     |> String.replace_suffix("000000.0", "m")
     |> String.replace_suffix("000.0", "k")
   end
