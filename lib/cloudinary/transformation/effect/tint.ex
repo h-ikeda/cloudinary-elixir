@@ -64,6 +64,56 @@ defmodule Cloudinary.Transformation.Effect.Tint do
     "tint:#{amount}:#{extract_color_list(colors)}"
   end
 
+  def to_url_string(%{equalize: equalize, amount: amount})
+      when is_amount(amount) and is_truthy(equalize) do
+    "tint:equalize:#{amount}"
+  end
+
+  def to_url_string(%{equalize: equalize, color: {color, position}})
+      when is_truthy(equalize) and is_rgb(color) and is_position(position) do
+    "tint:equalize:60:rgb:#{color}:#{position}p"
+  end
+
+  def to_url_string(%{equalize: equalize, color: {color, position}})
+      when is_truthy(equalize) and is_binary(color) and is_position(position) do
+    "tint:equalize:60:#{color}:#{position}p"
+  end
+
+  def to_url_string(%{equalize: equalize, color: color})
+      when is_truthy(equalize) and is_rgb(color) do
+    "tint:equalize:60:rgb:#{color}"
+  end
+
+  def to_url_string(%{equalize: equalize, color: color})
+      when is_truthy(equalize) and is_binary(color) do
+    "tint:equalize:60:#{color}"
+  end
+
+  def to_url_string(%{equalize: equalize, color: colors})
+      when is_truthy(equalize) and is_list(colors) do
+    "tint:equalize:60:#{extract_color_list(colors)}"
+  end
+
+  def to_url_string(%{amount: amount}) when is_amount(amount), do: "tint:#{amount}"
+
+  def to_url_string(%{color: {color, position}}) when is_rgb(color) and is_position(position) do
+    "tint:60:rgb:#{color}:#{position}p"
+  end
+
+  def to_url_string(%{color: {color, position}})
+      when is_binary(color) and is_position(position) do
+    "tint:60:#{color}:#{position}p"
+  end
+
+  def to_url_string(%{color: color}) when is_rgb(color), do: "tint:60:rgb:#{color}"
+  def to_url_string(%{color: color}) when is_binary(color), do: "tint:60:#{color}"
+
+  def to_url_string(%{color: colors}) when is_list(colors) do
+    "tint:60:#{extract_color_list(colors)}"
+  end
+
+  def to_url_string(%{equalize: equalize}) when is_truthy(equalize), do: "tint:equalize"
+
   @spec extract_color_list(
           [Cloudinary.Transformation.Color.t()]
           | [{Cloudinary.Transformation.Color.t(), 0..100 | float}]
