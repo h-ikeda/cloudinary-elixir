@@ -15,4 +15,8 @@ defmodule Cloudinary.Transformation.Effect.StyleTransfer do
   def to_url_string(%{style_strength: style_strength}) when is_style_strength(style_strength) do
     "style_transfer:#{style_strength}"
   end
+
+  def to_url_string(%{preserve_color: preserve_color}) when is_truthy(preserve_color) do
+    "style_transfer:preserve_color"
+  end
 end
