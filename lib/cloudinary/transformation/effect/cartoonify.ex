@@ -1,6 +1,6 @@
 defmodule Cloudinary.Transformation.Effect.Cartoonify do
   @moduledoc false
-  defguard is_0_to_100(value) when value <= 100 and value >= 0
+  defguardp is_0_to_100(value) when value <= 100 and value >= 0
 
   @spec to_url_string(%{
           optional(:line_strength) => 0..100 | float,
