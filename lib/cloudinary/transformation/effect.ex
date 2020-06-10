@@ -627,7 +627,7 @@ defmodule Cloudinary.Transformation.Effect do
       iex> #{__MODULE__}.to_url_string({:gamma, 50})
       "gamma:50"
   """
-  @type gamma :: :gamma | {:gamma, -50..150}
+  @type gamma :: :gamma | {:gamma, -50..150 | float}
   def to_url_string(:gamma), do: "gamma"
   def to_url_string({:gamma, level}) when level <= 150 and level >= -50, do: "gamma:#{level}"
 
@@ -1146,7 +1146,7 @@ defmodule Cloudinary.Transformation.Effect do
     to_url_string({:replace_color, Enum.into(options, %{})})
   end
 
-  def to_url_string({:shear, options}) when is_map(options) do
+  def to_url_string({:replace_color, options}) when is_map(options) do
     __MODULE__.ReplaceColor.to_url_string(options)
   end
 
