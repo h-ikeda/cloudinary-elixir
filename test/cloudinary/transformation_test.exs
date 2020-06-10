@@ -205,6 +205,14 @@ defmodule Cloudinary.TransformationTest do
       assert Transformation.to_url_string(device_pixel_ratio: :auto) == "dpr_auto"
     end
 
+    test "converts the effect param with an atom" do
+      assert Transformation.to_url_string(effect: :accelerate) == "e_accelerate"
+    end
+
+    test "converts the effect param with an atom and options" do
+      assert Transformation.to_url_string(effect: {:accelerate, 62}) == "e_accelerate:62"
+    end
+
     test "converts the duration param with an integer" do
       assert Transformation.to_url_string(duration: 8) == "du_8"
     end
@@ -316,6 +324,14 @@ defmodule Cloudinary.TransformationTest do
 
     test "converts the underlay param with a string" do
       assert Transformation.to_url_string(underlay: "underlay.png") == "u_underlay.png"
+    end
+
+    test "converts the overlay param with options" do
+      assert Transformation.to_url_string(overlay: [lut: "sample.3dl"]) == "l_lut:sample.3dl"
+    end
+
+    test "converts the underlay param with options" do
+      assert Transformation.to_url_string(underlay: [lut: "sample.3dl"]) == "u_lut:sample.3dl"
     end
 
     test "converts the page param with a range" do
