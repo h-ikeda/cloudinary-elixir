@@ -112,13 +112,38 @@ defmodule Cloudinary.TransformationTest do
       assert Transformation.to_url_string(border: [color: "white"]) == "bo_2px_solid_white"
     end
 
-    test "converts the border param with a width and a color (hex triplet) option" do
+    test "converts the border param with width and style options" do
+      assert Transformation.to_url_string(border: [width: 3, style: :solid]) ==
+               "bo_3px_solid_black"
+    end
+
+    test "converts the border param with width and color (hex triplet) options" do
       assert Transformation.to_url_string(border: [width: 3, color: '8e6b4a3c']) ==
                "bo_3px_solid_rgb:8e6b4a3c"
     end
 
-    test "converts the border param with a width and a color (color name) option" do
+    test "converts the border param with width and color (color name) options" do
       assert Transformation.to_url_string(border: [width: 3, color: "yellow"]) ==
+               "bo_3px_solid_yellow"
+    end
+
+    test "converts the border param with style and color (hex triplet) options" do
+      assert Transformation.to_url_string(border: [style: :solid, color: '8e6b4a3c']) ==
+               "bo_2px_solid_rgb:8e6b4a3c"
+    end
+
+    test "converts the border param with style and color (color name) options" do
+      assert Transformation.to_url_string(border: [style: :solid, color: "yellow"]) ==
+               "bo_2px_solid_yellow"
+    end
+
+    test "converts the border param with width, style and color (hex triplet) options" do
+      assert Transformation.to_url_string(border: [width: 3, style: :solid, color: '8e6b4a3c']) ==
+               "bo_3px_solid_rgb:8e6b4a3c"
+    end
+
+    test "converts the border param with width, style and color (color name) options" do
+      assert Transformation.to_url_string(border: [width: 3, style: :solid, color: "yellow"]) ==
                "bo_3px_solid_yellow"
     end
 
