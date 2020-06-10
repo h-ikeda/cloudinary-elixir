@@ -521,6 +521,21 @@ defmodule Cloudinary.Transformation.EffectTest do
                "preview:min_seg_dur_1.2"
     end
 
+    test "converts the :preview with duration and max_segments options" do
+      assert Effect.to_url_string({:preview, duration: 7.5, max_segments: 4}) ==
+               "preview:duration_7.5:max_seg_4"
+    end
+
+    test "converts the :preview with duration and min_segment_duration options" do
+      assert Effect.to_url_string({:preview, duration: 7.5, min_segment_duration: 2}) ==
+               "preview:duration_7.5:min_seg_dur_2"
+    end
+
+    test "converts the :preview with max_segments and min_segment_duration options" do
+      assert Effect.to_url_string({:preview, max_segments: 4, min_segment_duration: 2}) ==
+               "preview:max_seg_4:min_seg_dur_2"
+    end
+
     test "converts the :preview with duration, max_segments and min_segment_duration options" do
       preview_options = [duration: 16, max_segments: 8, min_segment_duration: 2]
 
