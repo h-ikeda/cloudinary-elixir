@@ -73,6 +73,26 @@ defmodule Cloudinary.Transformation.Effect.Vectorize do
     "vectorize:colors:#{c}:paths:#{p}:corners:#{r}"
   end
 
+  def to_url_string(%{detail: t, despeckle: s, paths: p})
+      when is_detail(t) and is_despeckle(s) and is_paths(p) do
+    "vectorize:detail:#{t}:despeckle:#{s}:paths:#{p}"
+  end
+
+  def to_url_string(%{detail: t, despeckle: s, corners: r})
+      when is_detail(t) and is_despeckle(s) and is_corners(r) do
+    "vectorize:detail:#{t}:despeckle:#{s}:corners:#{r}"
+  end
+
+  def to_url_string(%{detail: t, paths: p, corners: r})
+      when is_detail(t) and is_paths(p) and is_corners(r) do
+    "vectorize:detail:#{t}:paths:#{p}:corners:#{r}"
+  end
+
+  def to_url_string(%{despeckle: s, paths: p, corners: r})
+      when is_despeckle(s) and is_paths(p) and is_corners(r) do
+    "vectorize:despeckle:#{s}:paths:#{p}:corners:#{r}"
+  end
+
   def to_url_string(%{colors: c, detail: t}) when is_colors(c) and is_detail(t) do
     "vectorize:#{c}:#{t}"
   end
