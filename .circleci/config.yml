@@ -25,7 +25,11 @@ jobs:
             - build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}
             - build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}
             - build-cache-{{ arch }}-<< parameters.elixir >>
-      - run: mix dialyzer
+      - unless:
+          condition:
+            equal: ['1.6', << parameters.elixir >>]
+          steps:
+            - run: mix dialyzer
       - run: find _build/ -type f | xargs md5sum | sort > /tmp/_build.sum
       - save_cache:
           key: build-cache-{{ arch }}-<< parameters.elixir >>-{{ .Branch }}-{{ .Revision }}-{{ checksum "/tmp/_build.sum" }}
