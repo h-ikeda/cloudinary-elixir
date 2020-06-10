@@ -50,11 +50,11 @@ defmodule Cloudinary.Transformation.Flags do
   def to_url_string(flag) when is_flag(flag), do: "#{flag}"
 
   def to_url_string(flags) when is_list(flags) do
-    if Enum.all?(flags, &is_flag/1) do
+    if Enum.all?(flags, fn flag -> is_flag(flag) end) do
       Enum.join(flags, ".")
     else
       raise ArgumentError,
-            "unknown flag #{inspect(Enum.find(flags, &(!is_flag(&1))))} as a transformation parameter"
+            "unknown flag #{inspect(Enum.find(flags, &(!is_flag(&1))))} in the transformation"
     end
   end
 end
