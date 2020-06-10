@@ -20,6 +20,12 @@ defmodule Cloudinary.TransformationTest do
       assert Transformation.to_url_string(angle: [:vflip, :hflip]) == "a_vflip.hflip"
     end
 
+    test "raises if the angle param with a list containing invalid values" do
+      assert_raise ArgumentError, fn ->
+        Transformation.to_url_string(angle: [:vflip, :unknown])
+      end
+    end
+
     test "converts the aspect_ratio param with an integer" do
       assert Transformation.to_url_string(aspect_ratio: 2) == "ar_2"
     end
