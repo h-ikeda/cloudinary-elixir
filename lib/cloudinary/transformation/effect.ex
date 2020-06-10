@@ -9,6 +9,10 @@ defmodule Cloudinary.Transformation.Effect do
   import Cloudinary.Transformation.Color
 
   @typedoc """
+  A number greater than or equal to 0.
+  """
+  @type non_neg_number :: non_neg_integer | float
+  @typedoc """
   Any type of an effect.
   """
   @type t ::
@@ -578,12 +582,16 @@ defmodule Cloudinary.Transformation.Effect do
       iex> #{__MODULE__}.to_url_string({:fade, 2000})
       "fade:2000"
   """
-  @type fade :: :fade | {:fade, non_neg_integer | float}
+  @type fade :: :fade | {:fade, non_neg_number}
   def to_url_string(:fade), do: "fade"
   def to_url_string({:fade, fade}) when is_number(fade) and fade >= 0, do: "fade:#{fade}"
 
   @typedoc """
   The fill light adjustment.
+
+  Options:
+  * `:amount` - a `t:number/0` between 0 to 100.
+  * `:bias` - a `t:number/0` between -100 to 100. 
   ## Official documentation
   * https://cloudinary.com/documentation/image_transformation_reference#effect_parameter
   ## Example
