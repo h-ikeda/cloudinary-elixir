@@ -857,12 +857,12 @@ defmodule Cloudinary.Transformation.EffectTest do
                "tint:equalize:85:blue:64p"
     end
 
-    test "converts the :tint with equalize, list of colors and equalize options" do
+    test "converts the :tint with equalize, list of colors and amount options" do
       assert Effect.to_url_string({:tint, equalize: true, color: ["blue", '01fe88'], amount: 85}) ==
                "tint:equalize:85:blue:rgb:01fe88"
     end
 
-    test "converts the :tint with equalize, list of color positions and equalize options" do
+    test "converts the :tint with equalize, list of color positions and amount options" do
       tint_options = [equalize: true, color: [{"blue", 32}, {'01fe88', 64}], amount: 85]
 
       assert Effect.to_url_string({:tint, tint_options}) ==
