@@ -1,23 +1,22 @@
 defmodule Cloudinary.Transformation.Effect.StyleTransfer do
-  @moduledoc """
-  Representing the style transfer effect.
-  ## Official documentation
-  https://cloudinary.com/documentation/image_transformation_reference#effect_parameter
-  https://cloudinary.com/documentation/neural_artwork_style_transfer_addon
-  ## Example
-      iex> %#{__MODULE__}{style_strength: 60} |> to_string()
-      "e_style_transfer:60"
+  @moduledoc false
+  defguardp is_truthy(as_boolean) when as_boolean not in [false, nil]
+  defguardp is_style_strength(style_strength) when style_strength <= 100 and style_strength >= 0
 
-      iex> %#{__MODULE__}{preserve_color: true, style_strength: 40} |> to_string()
-      "e_style_transfer:preserve_color:40"
-  """
-  @type t :: %__MODULE__{preserve_color: boolean, style_strength: 0..100}
-  defstruct preserve_color: false, style_strength: 100
+  @spec to_url_string(%{
+          optional(:preserve_color) => as_boolean(any),
+          required(:style_strength) => 0..100 | float
+        }) :: String.t()
+  def to_url_string(%{preserve_color: preserve_color, style_strength: style_strength})
+      when is_truthy(preserve_color) and is_style_strength(style_strength) do
+    "style_transfer:preserve_color:#{style_strength}"
+  end
 
-  defimpl String.Chars do
-    def to_string(%{preserve_color: preserve_color, style_strength: style_strength})
-        when is_boolean(preserve_color) and style_strength in 0..100 do
-      "e_style_transfer:#{if preserve_color, do: "preserve_color:"}#{style_strength}"
-    end
+  def to_url_string(%{style_strength: style_strength}) when is_style_strength(style_strength) do
+    "style_transfer:#{style_strength}"
+  end
+
+  def to_url_string(%{preserve_color: preserve_color}) when is_truthy(preserve_color) do
+    "style_transfer:preserve_color"
   end
 end

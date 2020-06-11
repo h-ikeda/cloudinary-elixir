@@ -1,27 +1,34 @@
 defmodule Cloudinary.Transformation.Effect.Progressbar do
-  @moduledoc """
-  Representing the effect that adds a progressbar on the video.
-  ## Official documentation
-  https://cloudinary.com/documentation/video_transformation_reference#adding_video_effects
-  ## Example
-      iex> %#{__MODULE__}{type: :frame, color: "blue", width: 5} |> to_string()
-      "e_progressbar:frame:blue:5"
+  @moduledoc false
+  import Cloudinary.Transformation.Color
+  defguardp is_type(type) when type in [:frame, :bar]
+  defguardp is_color(color) when is_rgb(color) or is_binary(color)
+  defguardp is_width(width) when is_number(width) and width >= 0
 
-      iex> %#{__MODULE__}{color: 0xE8F7D4} |> to_string()
-      "e_progressbar:bar:e8f7d4:10"
-  """
-  @type t :: %__MODULE__{type: :bar | :frame, color: 0..0xFFFFFF | String.t(), width: pos_integer}
-  defstruct type: :bar, color: "red", width: 10
-
-  defimpl String.Chars do
-    def to_string(%{type: type, color: color, width: width})
-        when type in [:bar, :frame] and is_binary(color) and is_integer(width) and width > 0 do
-      "e_progressbar:#{type}:#{color}:#{width}"
-    end
-
-    def to_string(%{type: type, color: color, width: width})
-        when type in [:bar, :frame] and color in 0..0xFFFFFF and is_integer(width) and width > 0 do
-      "e_progressbar:#{type}:#{Integer.to_string(color, 16) |> String.downcase()}:#{width}"
-    end
+  @spec to_url_string(%{
+          optional(:type) => :frame | :bar,
+          optional(:color) => Cloudinary.Transformation.Color.t(),
+          optional(:width) => non_neg_integer | float
+        }) :: String.t()
+  def to_url_string(%{type: type, color: color, width: width})
+      when is_type(type) and is_color(color) and is_width(width) do
+    "progressbar:#{type}:#{color}:#{width}"
   end
+
+  def to_url_string(%{type: type, color: color}) when is_type(type) and is_color(color) do
+    "progressbar:#{type}:#{color}"
+  end
+
+  def to_url_string(%{type: type, width: width}) when is_type(type) and is_width(width) do
+    "progressbar:type_#{type}:width_#{width}"
+  end
+
+  def to_url_string(%{type: type}) when is_type(type), do: "progressbar:#{type}"
+
+  def to_url_string(%{color: color, width: width}) when is_color(color) and is_width(width) do
+    "progressbar:color_#{color}:width_#{width}"
+  end
+
+  def to_url_string(%{color: color}) when is_color(color), do: "progressbar:color_#{color}"
+  def to_url_string(%{width: width}) when is_width(width), do: "progressbar:width_#{width}"
 end

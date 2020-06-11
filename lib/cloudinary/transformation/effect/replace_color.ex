@@ -1,45 +1,30 @@
 defmodule Cloudinary.Transformation.Effect.ReplaceColor do
-  @moduledoc """
-  Representing the simply replacing color filter.
-  ## Official documentation
-  https://cloudinary.com/documentation/image_transformations#color_effects
-  ## Example
-      iex> %#{__MODULE__}{to: "saddlebrown", tolerance: 30} |> to_string()
-      "e_replace_color:saddlebrown:30"
+  @moduledoc false
+  import Cloudinary.Transformation.Color
+  defguardp is_color(color) when is_rgb(color) or is_rgba(color) or is_binary(color)
+  defguardp is_tolerance(tolerance) when is_number(tolerance) and tolerance >= 0
 
-      iex> %#{__MODULE__}{to: 0x2F4F4F, tolerance: 20} |> to_string()
-      "e_replace_color:2f4f4f:20"
+  @spec to_url_string(%{
+          required(:to_color) => Cloudinary.Transformation.Color.t(),
+          optional(:tolerance) => non_neg_integer | float,
+          optional(:from_color) => Cloudinary.Transformation.Color.t()
+        }) :: String.t()
+  def to_url_string(%{to_color: to_color, tolerance: tolerance, from_color: from_color})
+      when is_color(to_color) and is_tolerance(tolerance) and is_color(from_color) do
+    "replace_color:#{to_color}:#{tolerance}:#{from_color}"
+  end
 
-      iex> %#{__MODULE__}{to: "silver", tolerance: 60, from: 0x89B8ED} |> to_string()
-      "e_replace_color:silver:60:89b8ed"
+  def to_url_string(%{to_color: to_color, tolerance: tolerance})
+      when is_color(to_color) and is_tolerance(tolerance) do
+    "replace_color:#{to_color}:#{tolerance}"
+  end
 
-      iex> %#{__MODULE__}{to: "gray", tolerance: 60, from: "blue"} |> to_string()
-      "e_replace_color:gray:60:blue"
-  """
-  @type t :: %__MODULE__{
-          to: 0..0xFFFFFFFF | String.t(),
-          tolerance: non_neg_integer,
-          from: 0..0xFFFFFFFF | String.t() | nil
-        }
-  defstruct to: nil, tolerance: 50, from: nil
+  def to_url_string(%{to_color: to_color, from_color: from_color})
+      when is_color(to_color) and is_color(from_color) do
+    "replace_color:#{to_color}:50:#{from_color}"
+  end
 
-  defimpl String.Chars do
-    def to_string(%{to: to_color, tolerance: tolerance, from: nil})
-        when to_color in 0..0xFFFFFFFF and is_integer(tolerance) and tolerance >= 0 do
-      "e_replace_color:#{Integer.to_string(to_color, 16) |> String.downcase(:ascii)}:#{tolerance}"
-    end
-
-    def to_string(%{to: to_color, tolerance: tolerance, from: nil})
-        when is_binary(to_color) and is_integer(tolerance) and tolerance >= 0 do
-      "e_replace_color:#{to_color}:#{tolerance}"
-    end
-
-    def to_string(%{from: from_color} = replace) when from_color in 0..0xFFFFFFFF do
-      "#{%{replace | from: nil}}:#{Integer.to_string(from_color, 16) |> String.downcase(:ascii)}"
-    end
-
-    def to_string(%{from: from_color} = replace) when is_binary(from_color) do
-      "#{%{replace | from: nil}}:#{from_color}"
-    end
+  def to_url_string(%{to_color: to_color}) when is_color(to_color) do
+    "replace_color:#{to_color}"
   end
 end

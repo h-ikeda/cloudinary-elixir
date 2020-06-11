@@ -1,10 +1,13 @@
 defmodule Cloudinary.Format do
   @moduledoc """
-  Defining atoms representing supported image, video or audio formats.
+  The cloudinary supported formats of images, videos and audios.
   ## Official documentation
-  https://cloudinary.com/documentation/image_transformations#supported_image_formats
-  https://cloudinary.com/documentation/video_manipulation_and_delivery#supported_video_formats
-  https://cloudinary.com/documentation/audio_transformations#supported_audio_formats
+  * https://cloudinary.com/documentation/image_transformations#supported_image_formats
+  * https://cloudinary.com/documentation/video_manipulation_and_delivery#supported_video_formats
+  * https://cloudinary.com/documentation/audio_transformations#supported_audio_formats
+  """
+  @typedoc """
+  The cloudinary supported formats of images, videos and audios.
   """
   @type t ::
           :ai
@@ -67,17 +70,15 @@ defmodule Cloudinary.Format do
           | :wav
 
   @doc """
-  Returns true if image, video or audio format is supported by cloudinary.
-
+  Returns true if the format of the image, video or audio is supported by the cloudinary.
   ## Example
-      iex> Cloudinary.Format.supported?(:png)
+      iex> Cloudinary.Format.is_supported(:png)
       true
 
-      iex> Cloudinary.Format.supported?(:txt)
+      iex> Cloudinary.Format.is_supported(:txt)
       false
   """
-  @spec supported?(Macro.t()) :: Macro.t()
-  defguard supported?(format)
+  defguard is_supported(format)
            when format in [
                   :ai,
                   :gif,

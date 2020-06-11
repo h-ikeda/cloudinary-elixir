@@ -1,19 +1,14 @@
 defmodule Cloudinary.Transformation.Effect.Improve do
-  @moduledoc """
-  Representing the automatic image improvement.
-  ## Official documentation
-  https://cloudinary.com/documentation/image_transformation_reference#effect_parameter
-  ## Example
-      iex> %#{__MODULE__}{mode: :indoor, blend: 50} |> to_string()
-      "e_improve:indoor:50"
-  """
-  @type t :: %__MODULE__{mode: :outdoor | :indoor, blend: 0..100}
-  defstruct mode: :outdoor, blend: 100
+  @moduledoc false
+  defguardp is_mode(mode) when mode in [:indoor, :outdoor]
+  defguardp is_blend(blend) when blend <= 100 and blend >= 0
 
-  defimpl String.Chars do
-    def to_string(%{mode: mode, blend: blend})
-        when mode in [:outdoor, :indoor] and blend in 0..100 do
-      "e_improve:#{mode}:#{blend}"
-    end
+  @spec to_url_string(%{optional(:mode) => :indoor | :outdoor, optional(:blend) => 1..100 | float}) ::
+          String.t()
+  def to_url_string(%{mode: mode, blend: blend}) when is_mode(mode) and is_blend(blend) do
+    "improve:#{mode}:#{blend}"
   end
+
+  def to_url_string(%{mode: mode}) when is_mode(mode), do: "improve:#{mode}"
+  def to_url_string(%{blend: blend}) when is_blend(blend), do: "improve:#{blend}"
 end
