@@ -576,9 +576,39 @@ defmodule Cloudinary.Transformation.EffectTest do
       assert Effect.to_url_string({:progressbar, width: 12}) == "progressbar:width_12"
     end
 
-    test "converts the :progressbar with type, hex triplet color and width option" do
+    test "converts the :progressbar with type and hex triplet color options" do
+      assert Effect.to_url_string({:progressbar, type: :frame, color: '00254b'}) ==
+               "progressbar:frame:00254b"
+    end
+
+    test "converts the :progressbar with type and named color options" do
+      assert Effect.to_url_string({:progressbar, type: :frame, color: "blue"}) ==
+               "progressbar:frame:blue"
+    end
+
+    test "converts the :progressbar with type and width options" do
+      assert Effect.to_url_string({:progressbar, type: :frame, width: 4}) ==
+               "progressbar:type_frame:width_4"
+    end
+
+    test "converts the :progressbar with hex triplet color and width options" do
+      assert Effect.to_url_string({:progressbar, color: '00254b', width: 4}) ==
+               "progressbar:color_00254b:width_4"
+    end
+
+    test "converts the :progressbar with named color and width options" do
+      assert Effect.to_url_string({:progressbar, color: "blue", width: 4}) ==
+               "progressbar:color_blue:width_4"
+    end
+
+    test "converts the :progressbar with type, hex triplet color and width options" do
       assert Effect.to_url_string({:progressbar, type: :frame, color: '00254b', width: 4}) ==
                "progressbar:frame:00254b:4"
+    end
+
+    test "converts the :progressbar with type, named color and width options" do
+      assert Effect.to_url_string({:progressbar, type: :frame, color: "blue", width: 4}) ==
+               "progressbar:frame:blue:4"
     end
 
     test "converts the :recolor with a 3x3 tuple of tuples of floats" do
