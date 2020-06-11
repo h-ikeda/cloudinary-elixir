@@ -529,11 +529,112 @@ defmodule Cloudinary.TransformationTest do
                "w_auto:45:530"
     end
 
-    test "converts the width param with the :auto and a breakpoints option" do
+    test "converts the width param with the :auto and a breakpoints option with a min_width parameter" do
+      assert Transformation.to_url_string(width: {:auto, breakpoints: [min_width: 60]}) ==
+               "w_auto:breakpoints_60_1000_20_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with a max_width parameter" do
+      assert Transformation.to_url_string(width: {:auto, breakpoints: [max_width: 890]}) ==
+               "w_auto:breakpoints_50_890_20_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with a bytes_step parameter" do
+      assert Transformation.to_url_string(width: {:auto, breakpoints: [bytes_step: 40000]}) ==
+               "w_auto:breakpoints_50_1000_40_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with a max_images parameter" do
+      assert Transformation.to_url_string(width: {:auto, breakpoints: [max_images: 30]}) ==
+               "w_auto:breakpoints_50_1000_20_30"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with min_width and max_width parameters" do
+      breakpoints = [min_width: 60, max_width: 890]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_60_890_20_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with min_width and bytes_step parameters" do
+      breakpoints = [min_width: 60, bytes_step: 40000]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_60_1000_40_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with min_width and max_images parameters" do
+      breakpoints = [min_width: 60, max_images: 30]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_60_1000_20_30"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with max_width and bytes_step parameters" do
+      breakpoints = [max_width: 890, bytes_step: 40000]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_50_890_40_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with max_width and max_images parameters" do
+      breakpoints = [max_width: 890, max_images: 30]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_50_890_20_30"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with bytes_step and max_images parameters" do
+      breakpoints = [bytes_step: 40000, max_images: 30]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_50_1000_40_30"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with min_width, max_width and bytes_step parameters" do
+      breakpoints = [min_width: 60, max_width: 890, bytes_step: 40000]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_60_890_40_20"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with min_width, max_width and max_images parameters" do
+      breakpoints = [min_width: 60, max_width: 890, max_images: 30]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_60_890_20_30"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with max_width, bytes_step and max_images parameters" do
+      breakpoints = [bytes_step: 40000, max_width: 890, max_images: 30]
+
+      assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
+               "w_auto:breakpoints_50_890_40_30"
+    end
+
+    test "converts the width param with the :auto and a breakpoints option with min_width, max_width, bytes_step and max_images parameters" do
       breakpoints = [min_width: 60, max_width: 890, bytes_step: 40000, max_images: 30]
 
       assert Transformation.to_url_string(width: {:auto, breakpoints: breakpoints}) ==
                "w_auto:breakpoints_60_890_40_30"
+    end
+
+    test "raises an ArgumentError if the :auto of the width param has both rounding_step and breakpoints options" do
+      breakpoints = [min_width: 60, max_width: 890, bytes_step: 40000, max_images: 30]
+      width = {:auto, rounding_step: 45, breakpoints: breakpoints}
+      assert_raise ArgumentError, fn -> Transformation.to_url_string(width: width) end
+    end
+
+    test "raises an ArgumentError if the :auto of the width param has both width and breakpoints options" do
+      breakpoints = [min_width: 60, max_width: 890, bytes_step: 40000, max_images: 30]
+      width = {:auto, width: 530, breakpoints: breakpoints}
+      assert_raise ArgumentError, fn -> Transformation.to_url_string(width: width) end
+    end
+
+    test "raises an ArgumentError if the :auto of the width param has all of rounding_step, width and breakpoints options" do
+      breakpoints = [min_width: 60, max_width: 890, bytes_step: 40000, max_images: 30]
+      width = {:auto, rounding_step: 45, width: 530, breakpoints: breakpoints}
+      assert_raise ArgumentError, fn -> Transformation.to_url_string(width: width) end
     end
 
     test "converts the x param with an integer" do
