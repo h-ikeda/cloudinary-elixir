@@ -71,6 +71,20 @@ defmodule Cloudinary.Transformation do
       ...>   variables: [small: 90, medium: 135, mode: "crop"]
       ...> )
       "$small_90,$medium_135,$mode_!crop!,w_$small,h_$medium,c_$mode"
+
+      iex> #{__MODULE__}.to_url_string([[
+      ...>   overlay: "cloudinary_icon",
+      ...>   width: 200,
+      ...>   gravity: :east,
+      ...>   start_offset: 1,
+      ...>   end_offset: 11
+      ...> ], [
+      ...>   overlay: %{text: "Sample Video", font_family: "arial", font_size: 40},
+      ...>   gravity: :south,
+      ...>   y: 60,
+      ...>   start_offset: 2
+      ...> ]])
+      "l_cloudinary_icon,w_200,g_east,so_1,eo_11/l_text:arial_40:Sample%20Video,g_south,y_60,so_2"
   """
   @spec to_url_string(t | [t]) :: String.t()
   def to_url_string(transformation) when is_list(transformation) or is_map(transformation) do
