@@ -459,7 +459,20 @@ defmodule Cloudinary.Transformation.EffectTest do
       assert Effect.to_url_string({:outline, blur: 8}) == "outline:5:8"
     end
 
-    test "converts the :outline with mode, width and blur option" do
+    test "converts the :outline with mode and width options" do
+      assert Effect.to_url_string({:outline, mode: :outer, width: 6}) == "outline:outer:6"
+    end
+
+    test "converts the :outline with mode and blur options" do
+      assert Effect.to_url_string({:outline, mode: :inner_fill, blur: 8}) ==
+               "outline:inner_fill:5:8"
+    end
+
+    test "converts the :outline with width and blur options" do
+      assert Effect.to_url_string({:outline, width: 6, blur: 8}) == "outline:6:8"
+    end
+
+    test "converts the :outline with mode, width and blur options" do
       assert Effect.to_url_string({:outline, mode: :fill, width: 6, blur: 8}) ==
                "outline:fill:6:8"
     end
@@ -797,6 +810,16 @@ defmodule Cloudinary.Transformation.EffectTest do
     test "converts the :tint with named color and equalize options" do
       assert Effect.to_url_string({:tint, color: "blue", equalize: true}) ==
                "tint:equalize:60:blue"
+    end
+
+    test "converts the :tint with hex triplet color position and equalize options" do
+      assert Effect.to_url_string({:tint, color: {'01fe88', 32}, equalize: true}) ==
+               "tint:equalize:60:rgb:01fe88:32p"
+    end
+
+    test "converts the :tint with named color position and equalize options" do
+      assert Effect.to_url_string({:tint, color: {"blue", 64}, equalize: true}) ==
+               "tint:equalize:60:blue:64p"
     end
 
     test "converts the :tint with list of colors and equalize options" do
