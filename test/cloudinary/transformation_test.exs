@@ -20,7 +20,7 @@ defmodule Cloudinary.TransformationTest do
       assert Transformation.to_url_string(angle: [:vflip, :hflip]) == "a_vflip.hflip"
     end
 
-    test "raises if the angle param with a list containing invalid values" do
+    test "raises an ArgumentError if the angle param is a list containing invalid values" do
       assert_raise ArgumentError, fn ->
         Transformation.to_url_string(angle: [:vflip, :unknown])
       end
@@ -307,6 +307,10 @@ defmodule Cloudinary.TransformationTest do
     test "converts the flags param with a list of atoms" do
       assert Transformation.to_url_string(flags: [:force_icc, :progressive]) ==
                "fl_force_icc.progressive"
+    end
+
+    test "raises an ArgumentError if the flags param is a list containing invalid values" do
+      assert_raise ArgumentError, fn -> Transformation.to_url_string(flags: [:clip, :unknown]) end
     end
 
     test "converts the fps param with a :min option" do
