@@ -459,7 +459,7 @@ defmodule Cloudinary.Uploader do
   """
   @type responsive_breakpoint :: keyword | map
   defp convert_param({:responsive_breakpoints, breakpoint}) when is_map(breakpoint) do
-    "[#{__MODULE__.ResponsiveBreakpoint.to_string(breakpoint)}]"
+    {:responsive_breakpoints, "[#{__MODULE__.ResponsiveBreakpoint.to_string(breakpoint)}]"}
   end
 
   defp convert_param({:responsive_breakpoints, breakpoints}) when is_list(breakpoints) do
