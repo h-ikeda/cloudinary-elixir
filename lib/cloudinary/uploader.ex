@@ -524,19 +524,16 @@ defmodule Cloudinary.Uploader do
       "eager=c_fit%2Ca_6%2Ce_auto_contrast%2Fpng%7Ce_art%3Aaudrey%2Fe_art%3Azorro"
   """
   @type eager :: keyword | map
-  defp convert_param({:eager, eager}) when is_list(eager) or is_map(eager) do
-    cond do
-      is_map(eager) ->
-        __MODULE__.Eager.to_string(eager)
+  defp convert_param({:eager, eager}) when is_map(eager), do: __MODULE__.Eager.to_string(eager)
 
-      Keyword.keyword?(eager) ->
-        __MODULE__.Eager.to_string(Enum.into(eager, %{}))
-
-      true ->
-        Enum.map_join(eager, "|", fn
-          eager when is_map(eager) -> __MODULE__.Eager.to_string(eager)
-          eager when is_list(eager) -> __MODULE__.Eager.to_string(Enum.into(eager, %{}))
-        end)
+  defp convert_param({:eager, eager}) when is_list(eager) do
+    if Keyword.keyword?(eager) do
+      __MODULE__.Eager.to_string(Enum.into(eager, %{}))
+    else
+      Enum.map_join(eager, "|", fn
+        eager when is_map(eager) -> __MODULE__.Eager.to_string(eager)
+        eager when is_list(eager) -> __MODULE__.Eager.to_string(Enum.into(eager, %{}))
+      end)
     end
   end
 
