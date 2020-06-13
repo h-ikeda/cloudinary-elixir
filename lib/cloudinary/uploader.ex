@@ -143,7 +143,7 @@ defmodule Cloudinary.Uploader do
           optional(:custom_coordinates) => coordinates,
           optional(:face_coordinates) => coordinates | [coordinates],
           optional(:access_control) => access_control,
-          optional(:responsive_breakpoints) => [responsive_breakpoint],
+          optional(:responsive_breakpoints) => responsive_breakpoint | [responsive_breakpoint],
           optional(:context) => context,
           optional(:metadata) => metadata,
           optional(:access_mode) => access_mode,
@@ -458,17 +458,25 @@ defmodule Cloudinary.Uploader do
       "responsive_breakpoints=%5B%7B%22create_derived%22%3Atrue%2C%22transformation%22%3A%22c_fill%2Car_16%3A9%2Cg_face%22%2C%22max_width%22%3A1000%2C%22min_width%22%3A200%2C%22bytes_step%22%3A20000%2C%22max_images%22%3A20%7D%2C%7B%22create_derived%22%3Afalse%2C%22format%22%3A%22jpg%22%2C%22transformation%22%3A%22c_fill%2Cw_0.75%2Ce_sharpen%22%2C%22max_width%22%3A2000%2C%22min_width%22%3A350%2C%22max_images%22%3A18%7D%5D"
   """
   @type responsive_breakpoint :: keyword | map
+  defp convert_param({:responsive_breakpoints, breakpoint}) when is_map(breakpoint) do
+    "[#{__MODULE__.ResponsiveBreakpoint.to_string(breakpoint)}]"
+  end
+
   defp convert_param({:responsive_breakpoints, breakpoints}) when is_list(breakpoints) do
-    breakpoints =
-      Enum.map(breakpoints, fn
-        breakpoint when is_list(breakpoint) ->
-          breakpoint |> Enum.into(%{}) |> __MODULE__.ResponsiveBreakpoint.to_string()
+    if Keyword.keyword?(breakpoints) do
+      convert_param({:responsive_breakpoints, Enum.into(breakpoints, %{})})
+    else
+      breakpoints =
+        Enum.map(breakpoints, fn
+          breakpoint when is_list(breakpoint) ->
+            breakpoint |> Enum.into(%{}) |> __MODULE__.ResponsiveBreakpoint.to_string()
 
-        breakpoint when is_map(breakpoint) ->
-          breakpoint |> __MODULE__.ResponsiveBreakpoint.to_string()
-      end)
+          breakpoint when is_map(breakpoint) ->
+            breakpoint |> __MODULE__.ResponsiveBreakpoint.to_string()
+        end)
 
-    {:responsive_breakpoints, "[#{Enum.join(breakpoints, ",")}]"}
+      {:responsive_breakpoints, "[#{Enum.join(breakpoints, ",")}]"}
+    end
   end
 
   @typedoc """
