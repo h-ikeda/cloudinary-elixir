@@ -488,7 +488,7 @@ defmodule Cloudinary.Uploader do
   defp convert_param({:context, context}) when is_list(context) or is_map(context) do
     context =
       Enum.map_join(context, "|", fn {key, value} ->
-        "#{key}=#{String.replace("#{value}", ~r/[=|]/, "\\\\0")}"
+        "#{key}=#{String.replace("#{value}", ~r/[=|]/, "\\\\\\0")}"
       end)
 
     {:context, context}
@@ -503,7 +503,7 @@ defmodule Cloudinary.Uploader do
   defp convert_param({:metadata, metadata}) when is_list(metadata) or is_map(metadata) do
     metadata =
       Enum.map_join(metadata, "|", fn {key, value} ->
-        "#{key}=#{String.replace("#{value}", ~r/[=|"]/, "\\\\0")}"
+        "#{key}=#{String.replace("#{value}", ~r/[=|"]/, "\\\\\\0")}"
       end)
 
     {:metadata, metadata}
