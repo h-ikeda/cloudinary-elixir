@@ -554,7 +554,7 @@ defmodule Cloudinary.Uploader do
   A `t:tuple/0` with two elements, the header name and the header value.
   ## Example
       iex> #{__MODULE__}.encode_params(%{headers: {"x-robots-tag", "noindex"}})
-      "headers=x-robotes-tag%3A%20noindex"
+      "headers=x-robots-tag%3A%20noindex"
 
       iex> #{__MODULE__}.encode_params(%{
       ...>   headers: [
@@ -562,7 +562,7 @@ defmodule Cloudinary.Uploader do
       ...>     {"link", "<https://example.com>; rel=\"preconnect\""}
       ...>   ]
       ...> })
-      "headers=x-robotes-tag%3A%20noindex%0Alink%3A%20%3Chttps%3A%2F%2Fexample.com%3E%3B%20rel%3D%22preconnect%22"
+      "headers=x-robots-tag%3A%20noindex%0Alink%3A%20%3Chttps%3A%2F%2Fexample.com%3E%3B%20rel%3D%22preconnect%22"
   """
   @type header :: {String.t(), String.t()}
   defp convert_param({:headers, {name, value}}) when is_binary(name) and is_binary(value) do
