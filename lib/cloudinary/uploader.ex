@@ -483,6 +483,16 @@ defmodule Cloudinary.Uploader do
   A `t:list/0` of two element `t:tuple/0`s or a`t:map/0` representing key-value pairs.
 
   Each key and value can be any types `String.Chars` protocol implementation.
+  ## Example
+      iex> #{__MODULE__}.encode_params(%{
+      ...>   context: [alt: "My image", caption: "Profile image"]
+      ...> })
+      "context=alt%3DMy+image%7Ccaption%3DProfile+image"
+
+      iex> #{__MODULE__}.encode_params(%{
+      ...>   context: %{"alt" => "My=image", "caption" => "Profile|image"}
+      ...> })
+      "context=alt%3DMy%5C%3Dimage%7Ccaption%3DProfile%5C%7Cimage"
   """
   @type context :: Enum.t()
   defp convert_param({:context, context}) when is_list(context) or is_map(context) do
@@ -498,6 +508,16 @@ defmodule Cloudinary.Uploader do
   A `t:list/0` of two element `t:tuple/0`s or a`t:map/0` representing key-value pairs.
 
   Each key and value can be any types `String.Chars` protocol implementation.
+  ## Example
+      iex> #{__MODULE__}.encode_params(%{
+      ...>   metadata: [in_stock_id: 50, color_id: "[\"green\",\"red\"]"]
+      ...> })
+      "metadata=in_stock_id%3D50%7Ccolor_id%3D%5B%5C%22green%5C%22%2C%5C%22red%5C%22%5D"
+
+      iex> #{__MODULE__}.encode_params(%{
+      ...>   metadata: %{"in_stock_id" => 50, "color_id" => "[\"green\",\"red\"]"}
+      ...> })
+      "metadata=in_stock_id%3D50%7Ccolor_id%3D%5B%5C%22green%5C%22%2C%5C%22red%5C%22%5D"
   """
   @type metadata :: Enum.t()
   defp convert_param({:metadata, metadata}) when is_list(metadata) or is_map(metadata) do
