@@ -4,7 +4,7 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
   defguardp is_non_neg_integer(number) when is_integer(number) and number >= 0
   defguardp is_pos_integer(number) when is_integer(number) and number > 0
 
-  @spec to_string(%{
+  @type t :: %{
           required(:create_derived) => boolean,
           optional(:format) => Cloudinary.Format.t(),
           optional(:transformation) =>
@@ -13,7 +13,8 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
           optional(:min_width) => non_neg_integer,
           optional(:bytes_step) => pos_integer,
           optional(:max_images) => 3..200
-        }) :: String.t()
+        }
+  @spec to_string(t) :: String.t()
   def to_string(%{create_derived: create_derived} = options) when is_boolean(create_derived) do
     []
     |> prepend_max_images(options)
@@ -31,9 +32,7 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
     ["\"create_derived\":#{create_derived}" | acc]
   end
 
-  @spec prepend_format([String.t()], %{
-          optional(:format) => Cloudinary.Format.t()
-        }) :: [String.t()]
+  @spec prepend_format([String.t()], t) :: [String.t()]
   defp prepend_format(acc, %{format: format}) when is_supported(format) do
     ["\"format\":\"#{format}\"" | acc]
   end
@@ -44,19 +43,14 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
 
   defp prepend_format(acc, _), do: acc
 
-  @spec prepend_transformation([String.t()], %{
-          optional(:transformation) =>
-            Cloudinary.Transformation.t() | [Cloudinary.Transformation.t()]
-        }) :: [String.t()]
+  @spec prepend_transformation([String.t()], t) :: [String.t()]
   defp prepend_transformation(acc, %{transformation: transformation}) do
     ["\"transformation\":\"#{Cloudinary.Transformation.to_url_string(transformation)}\"" | acc]
   end
 
   defp prepend_transformation(acc, _), do: acc
 
-  @spec prepend_max_width([String.t()], %{
-          optional(:max_width) => non_neg_integer
-        }) :: [String.t()]
+  @spec prepend_max_width([String.t()], t) :: [String.t()]
   defp prepend_max_width(acc, %{max_width: max_width}) when is_non_neg_integer(max_width) do
     ["\"max_width\":#{max_width}" | acc]
   end
@@ -67,9 +61,7 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
 
   defp prepend_max_width(acc, _), do: acc
 
-  @spec prepend_min_width([String.t()], %{
-          optional(:min_width) => non_neg_integer
-        }) :: [String.t()]
+  @spec prepend_min_width([String.t()], t) :: [String.t()]
   defp prepend_min_width(acc, %{min_width: min_width}) when is_non_neg_integer(min_width) do
     ["\"min_width\":#{min_width}" | acc]
   end
@@ -80,7 +72,7 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
 
   defp prepend_min_width(acc, _), do: acc
 
-  @spec prepend_bytes_step([String.t()], %{optional(:bytes_step) => pos_integer}) :: [String.t()]
+  @spec prepend_bytes_step([String.t()], t) :: [String.t()]
   defp prepend_bytes_step(acc, %{bytes_step: bytes_step}) when is_pos_integer(bytes_step) do
     ["\"bytes_step\":#{bytes_step}" | acc]
   end
@@ -91,7 +83,7 @@ defmodule Cloudinary.Uploader.ResponsiveBreakpoint do
 
   defp prepend_bytes_step(acc, _), do: acc
 
-  @spec prepend_max_images([String.t()], %{optional(:max_images) => 3..200}) :: [String.t()]
+  @spec prepend_max_images([String.t()], t) :: [String.t()]
   defp prepend_max_images(acc, %{max_images: max_images}) when max_images in 3..200 do
     ["\"max_images\":#{max_images}" | acc]
   end
