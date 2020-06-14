@@ -105,7 +105,13 @@ defmodule Cloudinary.Uploader do
       iex> #{__MODULE__}.encode_params(%{timestamp: 1592061121})
       "timestamp=1592061121"
 
-      iex> #{__MODULE__}.encode_params(%{timestamp: ~U[2019-12-22 06:27:03.549Z]})
+      iex> #{__MODULE__}.encode_params(%{timestamp: #{
+    if Version.match?(System.version(), ">= 1.9.0") do
+      "~U[2019-12-22 06:27:03Z]"
+    else
+      "DateTime.from_unix!(1576996023)"
+    end
+  }})
       "timestamp=1576996023"
   """
   @spec encode_params(%{
