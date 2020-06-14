@@ -89,14 +89,14 @@ defmodule Cloudinary.UploaderTest do
     end
 
     test "encodes the access_control parameter with access_type and start options" do
-      access_control = [access_type: :anonymous, start: DateTime.from_unix!(1427110463)]
+      access_control = [access_type: :anonymous, start: DateTime.from_unix!(1_427_110_463)]
 
       assert Uploader.encode_params(%{access_control: access_control}) ==
                "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22start%22%3A%222015-03-23T11%3A34%3A23Z%22%7D"
     end
 
     test "encodes the access_control parameter with access_type and end options" do
-      access_control = [access_type: :anonymous, end: DateTime.from_unix!(1527840601)]
+      access_control = [access_type: :anonymous, end: DateTime.from_unix!(1_527_840_601)]
 
       assert Uploader.encode_params(%{access_control: access_control}) ==
                "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22end%22%3A%222018-06-01T08%3A10%3A01Z%22%7D"
@@ -105,8 +105,8 @@ defmodule Cloudinary.UploaderTest do
     test "encodes the access_control parameter with access_type, start and end options" do
       access_control = [
         access_type: :anonymous,
-        start: DateTime.from_unix!(1427110463),
-        end: DateTime.from_unix!(1527840601)
+        start: DateTime.from_unix!(1_427_110_463),
+        end: DateTime.from_unix!(1_527_840_601)
       ]
 
       assert Uploader.encode_params(%{access_control: access_control}) ==
