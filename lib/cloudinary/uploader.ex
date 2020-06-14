@@ -91,6 +91,12 @@ defmodule Cloudinary.Uploader do
       iex> #{__MODULE__}.encode_params(%{public_id: "flower"})
       "public_id=flower"
 
+      iex> #{__MODULE__}.encode_params(%{tags: ["dog", "cat"]})
+      "tags=dog%2Ccat"
+
+      iex> #{__MODULE__}.encode_params(%{tags: ["dog", :not_a_string]})
+      ** (ArgumentError) expected a string or a list of strings
+
       iex> #{__MODULE__}.encode_params(%{format: :jpg})
       "format=jpg"
 
@@ -207,7 +213,7 @@ defmodule Cloudinary.Uploader do
 
   defp convert_param({:tags, tags}) when is_list(tags) do
     if Enum.all?(tags, &is_binary/1) do
-      Enum.join(tags, ",")
+      {:tags, Enum.join(tags, ",")}
     else
       raise ArgumentError, "expected a string or a list of strings"
     end
