@@ -144,11 +144,44 @@ defmodule Cloudinary.UploaderTest do
           max_width: 2000,
           max_images: 18,
           transformation: [crop: :fill, width: 0.75, effect: :sharpen]
-        }
+        },
+        [create_derived: true]
       ]
 
       assert Uploader.encode_params(%{responsive_breakpoints: responsive_breakpoints}) ==
-               "responsive_breakpoints=%5B%7B%22create_derived%22%3Atrue%2C%22transformation%22%3A%22c_fill%2Car_16%3A9%2Cg_face%22%2C%22max_width%22%3A1000%2C%22min_width%22%3A200%2C%22bytes_step%22%3A20000%2C%22max_images%22%3A20%7D%2C%7B%22create_derived%22%3Afalse%2C%22format%22%3A%22jpg%22%2C%22transformation%22%3A%22c_fill%2Cw_0.75%2Ce_sharpen%22%2C%22max_width%22%3A2000%2C%22min_width%22%3A350%2C%22max_images%22%3A18%7D%5D"
+               "responsive_breakpoints=%5B%7B%22create_derived%22%3Atrue%2C%22transformation%22%3A%22c_fill%2Car_16%3A9%2Cg_face%22%2C%22max_width%22%3A1000%2C%22min_width%22%3A200%2C%22bytes_step%22%3A20000%2C%22max_images%22%3A20%7D%2C%7B%22create_derived%22%3Afalse%2C%22format%22%3A%22jpg%22%2C%22transformation%22%3A%22c_fill%2Cw_0.75%2Ce_sharpen%22%2C%22max_width%22%3A2000%2C%22min_width%22%3A350%2C%22max_images%22%3A18%7D%2C%7B%22create_derived%22%3Atrue%7D%5D"
+    end
+
+    test "raises if the responsive_breakpoints parameter has invalid max_width options" do
+      assert_raise ArgumentError, fn ->
+        Uploader.encode_params(%{
+          responsive_breakpoints: [create_derived: true, max_width: "invalid"]
+        })
+      end
+    end
+
+    test "raises if the responsive_breakpoints parameter has invalid min_width options" do
+      assert_raise ArgumentError, fn ->
+        Uploader.encode_params(%{
+          responsive_breakpoints: [create_derived: true, min_width: "invalid"]
+        })
+      end
+    end
+
+    test "raises if the responsive_breakpoints parameter has invalid bytes_step options" do
+      assert_raise ArgumentError, fn ->
+        Uploader.encode_params(%{
+          responsive_breakpoints: [create_derived: true, bytes_step: "invalid"]
+        })
+      end
+    end
+
+    test "raises if the responsive_breakpoints parameter has invalid max_images options" do
+      assert_raise ArgumentError, fn ->
+        Uploader.encode_params(%{
+          responsive_breakpoints: [create_derived: true, max_images: "invalid"]
+        })
+      end
     end
 
     test "encodes the context parameter with the context values" do
