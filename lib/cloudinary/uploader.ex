@@ -202,27 +202,29 @@ defmodule Cloudinary.Uploader do
     params |> Enum.map(&convert_param/1) |> URI.encode_query()
   end
 
+  defguardp is_boolean_option(key)
+            when key in [
+                   :async,
+                   :backup,
+                   :cinemagraph_analysis,
+                   :colors,
+                   :discard_original_filename,
+                   :eager_async,
+                   :exif,
+                   :faces,
+                   :image_metadata,
+                   :invalidate,
+                   :overwrite,
+                   :phash,
+                   :quality_analysis,
+                   :return_delete_token,
+                   :unique_filename,
+                   :use_filename
+                 ]
+
   @spec convert_param({atom, any}) :: {atom, String.Chars.t()}
-  @boolean_options [
-    :async,
-    :backup,
-    :cinemagraph_analysis,
-    :colors,
-    :discard_original_filename,
-    :eager_async,
-    :exif,
-    :faces,
-    :image_metadata,
-    :invalidate,
-    :overwrite,
-    :phash,
-    :quality_analysis,
-    :return_delete_token,
-    :unique_filename,
-    :use_filename
-  ]
-  defp convert_param({key, true}) when key in @boolean_options, do: {key, 1}
-  defp convert_param({key, false}) when key in @boolean_options, do: {key, 0}
+  defp convert_param({key, true}) when is_boolean_option(key), do: {key, 1}
+  defp convert_param({key, false}) when is_boolean_option(key), do: {key, 0}
 
   defp convert_param({key, string} = param)
        when is_binary(string) and
