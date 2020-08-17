@@ -86,7 +86,7 @@ defmodule Cloudinary.Uploader do
       "3926d235b29f223e9a528ed493fe53710f7610bb"
   """
   @spec signature(binary, binary) :: binary
-  def signature(params, api_secret) do
+  def signature(params, api_secret) when is_binary(params) and is_binary(api_secret) do
     params =
       params
       |> String.split("&")
