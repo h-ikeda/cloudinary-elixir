@@ -3,103 +3,111 @@ defmodule Cloudinary.UploaderTest do
   alias Cloudinary.Uploader
   doctest Uploader
 
-  describe "encode_params/1" do
+  describe "convert_params/1" do
     test "encodes the allowed_formats parameter with a string" do
-      assert Uploader.encode_params(%{allowed_formats: "txt"}) == "allowed_formats=txt"
+      assert Uploader.convert_params(%{allowed_formats: "txt"}) == [allowed_formats: "txt"]
     end
 
     test "encodes the allowed_formats parameter with an atom" do
-      assert Uploader.encode_params(%{allowed_formats: :png}) == "allowed_formats=png"
+      assert Uploader.convert_params(%{allowed_formats: :png}) == [allowed_formats: :png]
     end
 
     test "encodes the allowed_formats parameter with a list" do
-      assert Uploader.encode_params(%{allowed_formats: ["txt", :svg]}) ==
-               "allowed_formats=txt%2Csvg"
+      assert Uploader.convert_params(%{allowed_formats: ["txt", :svg]}) ==
+               [allowed_formats: "txt,svg"]
     end
 
     test "raises if the allowed_formats parameter with a list including invalid formats" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{allowed_formats: [:dwg, "png"]})
+        Uploader.convert_params(%{allowed_formats: [:dwg, "png"]})
       end
     end
 
     test "encodes the custom_coordinates parameter with a tuple of numbers" do
-      assert Uploader.encode_params(%{custom_coordinates: {85, 120, 220, 310}}) ==
-               "custom_coordinates=85%2C120%2C220%2C310"
+      assert Uploader.convert_params(%{custom_coordinates: {85, 120, 220, 310}}) ==
+               [custom_coordinates: "85,120,220,310"]
     end
 
     test "encodes the face_coordinates parameter with a tuple of numbers" do
-      assert Uploader.encode_params(%{face_coordinates: {85, 120, 220, 310}}) ==
-               "face_coordinates=85%2C120%2C220%2C310"
+      assert Uploader.convert_params(%{face_coordinates: {85, 120, 220, 310}}) ==
+               [face_coordinates: "85,120,220,310"]
     end
 
     test "encodes the face_coordinates parameter with a list of tuples" do
-      assert Uploader.encode_params(%{face_coordinates: [{10, 20, 150, 130}, {213, 345, 82, 61}]}) ==
-               "face_coordinates=10%2C20%2C150%2C130%7C213%2C345%2C82%2C61"
+      assert Uploader.convert_params(%{face_coordinates: [{10, 20, 150, 130}, {213, 345, 82, 61}]}) ==
+               [face_coordinates: "10,20,150,130|213,345,82,61"]
     end
 
     test "encodes the access_mode parameter with an atom" do
-      assert Uploader.encode_params(%{access_mode: :public}) == "access_mode=public"
+      assert Uploader.convert_params(%{access_mode: :public}) == [access_mode: :public]
     end
 
     test "encodes the background_removal parameter with an atom" do
-      assert Uploader.encode_params(%{background_removal: :cloudinary_ai}) ==
-               "background_removal=cloudinary_ai"
+      assert Uploader.convert_params(%{background_removal: :cloudinary_ai}) ==
+               [background_removal: :cloudinary_ai]
     end
 
     test "encodes the detection parameter with an atom" do
-      assert Uploader.encode_params(%{detection: :adv_face}) == "detection=adv_face"
+      assert Uploader.convert_params(%{detection: :adv_face}) == [detection: :adv_face]
     end
 
     test "encodes the moderation parameter with an atom" do
-      assert Uploader.encode_params(%{moderation: :metascan}) == "moderation=metascan"
+      assert Uploader.convert_params(%{moderation: :metascan}) == [moderation: :metascan]
     end
 
     test "encodes the ocr parameter with an atom" do
-      assert Uploader.encode_params(%{ocr: :adv_ocr}) == "ocr=adv_ocr"
+      assert Uploader.convert_params(%{ocr: :adv_ocr}) == [ocr: :adv_ocr]
     end
 
     test "encodes the raw_convert parameter with an atom" do
-      assert Uploader.encode_params(%{raw_convert: :extract_text}) == "raw_convert=extract_text"
+      assert Uploader.convert_params(%{raw_convert: :extract_text}) == [
+               raw_convert: :extract_text
+             ]
     end
 
     test "encodes the type parameter with an atom" do
-      assert Uploader.encode_params(%{type: :authenticated}) == "type=authenticated"
+      assert Uploader.convert_params(%{type: :authenticated}) == [type: :authenticated]
     end
 
     test "encodes the categorization parameter with an atom" do
-      assert Uploader.encode_params(%{categorization: :google_video_tagging}) ==
-               "categorization=google_video_tagging"
+      assert Uploader.convert_params(%{categorization: :google_video_tagging}) ==
+               [categorization: :google_video_tagging]
     end
 
     test "encodes the categorization parameter with a list of atoms" do
-      assert Uploader.encode_params(%{categorization: [:google_video_tagging, :aws_rek_tagging]}) ==
-               "categorization=google_video_tagging%2Caws_rek_tagging"
+      assert Uploader.convert_params(%{categorization: [:google_video_tagging, :aws_rek_tagging]}) ==
+               [categorization: "google_video_tagging,aws_rek_tagging"]
     end
 
     test "raises if the categorization parameter with a list including invalid categorizations" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{categorization: [:unkown, :google_video_tagging]})
+        Uploader.convert_params(%{categorization: [:unkown, :google_video_tagging]})
       end
     end
 
     test "encodes the access_control parameter with an access_type option" do
-      assert Uploader.encode_params(%{access_control: [access_type: :anonymous]}) ==
-               "access_control=%7B%22access_type%22%3A%22anonymous%22%7D"
+      assert Uploader.convert_params(%{access_control: [access_type: :anonymous]}) ==
+               [access_control: "{\"access_type\":\"anonymous\"}"]
     end
 
     test "encodes the access_control parameter with access_type and start options" do
       access_control = [access_type: :anonymous, start: DateTime.from_unix!(1_427_110_463)]
 
-      assert Uploader.encode_params(%{access_control: access_control}) ==
-               "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22start%22%3A%222015-03-23T11%3A34%3A23Z%22%7D"
+      assert Uploader.convert_params(%{access_control: access_control}) ==
+               [
+                 access_control:
+                   "{\"access_type\":\"anonymous\",\"start\":\"2015-03-23T11:34:23Z\"}"
+               ]
     end
 
     test "encodes the access_control parameter with access_type and end options" do
       access_control = [access_type: :anonymous, end: DateTime.from_unix!(1_527_840_601)]
 
-      assert Uploader.encode_params(%{access_control: access_control}) ==
-               "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22end%22%3A%222018-06-01T08%3A10%3A01Z%22%7D"
+      assert Uploader.convert_params(%{access_control: access_control}) ==
+               [
+                 access_control:
+                   "{\"access_type\":\"anonymous\",\"end\":\"2018-06-01T08:10:01Z\"}"
+               ]
     end
 
     test "encodes the access_control parameter with access_type, start and end options" do
@@ -109,8 +117,11 @@ defmodule Cloudinary.UploaderTest do
         end: DateTime.from_unix!(1_527_840_601)
       ]
 
-      assert Uploader.encode_params(%{access_control: access_control}) ==
-               "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22start%22%3A%222015-03-23T11%3A34%3A23Z%22%2C%22end%22%3A%222018-06-01T08%3A10%3A01Z%22%7D"
+      assert Uploader.convert_params(%{access_control: access_control}) ==
+               [
+                 access_control:
+                   "{\"access_type\":\"anonymous\",\"start\":\"2015-03-23T11:34:23Z\",\"end\":\"2018-06-01T08:10:01Z\"}"
+               ]
     end
 
     test "encodes the responsive_breakpoints parameter with a breakpoint setting" do
@@ -123,8 +134,11 @@ defmodule Cloudinary.UploaderTest do
         transformation: [crop: :fill, aspect_ratio: {16, 9}, gravity: :face]
       ]
 
-      assert Uploader.encode_params(%{responsive_breakpoints: responsive_breakpoint}) ==
-               "responsive_breakpoints=%5B%7B%22create_derived%22%3Atrue%2C%22transformation%22%3A%22c_fill%2Car_16%3A9%2Cg_face%22%2C%22max_width%22%3A1000%2C%22min_width%22%3A200%2C%22bytes_step%22%3A20000%2C%22max_images%22%3A20%7D%5D"
+      assert Uploader.convert_params(%{responsive_breakpoints: responsive_breakpoint}) ==
+               [
+                 responsive_breakpoints:
+                   "[{\"create_derived\":true,\"transformation\":\"c_fill,ar_16:9,g_face\",\"max_width\":1000,\"min_width\":200,\"bytes_step\":20000,\"max_images\":20}]"
+               ]
     end
 
     test "encodes the responsive_breakpoints parameter with a list of breakpoint settings" do
@@ -148,13 +162,16 @@ defmodule Cloudinary.UploaderTest do
         [create_derived: true]
       ]
 
-      assert Uploader.encode_params(%{responsive_breakpoints: responsive_breakpoints}) ==
-               "responsive_breakpoints=%5B%7B%22create_derived%22%3Atrue%2C%22transformation%22%3A%22c_fill%2Car_16%3A9%2Cg_face%22%2C%22max_width%22%3A1000%2C%22min_width%22%3A200%2C%22bytes_step%22%3A20000%2C%22max_images%22%3A20%7D%2C%7B%22create_derived%22%3Afalse%2C%22format%22%3A%22jpg%22%2C%22transformation%22%3A%22c_fill%2Cw_0.75%2Ce_sharpen%22%2C%22max_width%22%3A2000%2C%22min_width%22%3A350%2C%22max_images%22%3A18%7D%2C%7B%22create_derived%22%3Atrue%7D%5D"
+      assert Uploader.convert_params(%{responsive_breakpoints: responsive_breakpoints}) ==
+               [
+                 responsive_breakpoints:
+                   "[{\"create_derived\":true,\"transformation\":\"c_fill,ar_16:9,g_face\",\"max_width\":1000,\"min_width\":200,\"bytes_step\":20000,\"max_images\":20},{\"create_derived\":false,\"format\":\"jpg\",\"transformation\":\"c_fill,w_0.75,e_sharpen\",\"max_width\":2000,\"min_width\":350,\"max_images\":18},{\"create_derived\":true}]"
+               ]
     end
 
     test "raises if the responsive_breakpoints parameter has invalid format options" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{
+        Uploader.convert_params(%{
           responsive_breakpoints: [create_derived: true, format: :unknown]
         })
       end
@@ -162,7 +179,7 @@ defmodule Cloudinary.UploaderTest do
 
     test "raises if the responsive_breakpoints parameter has invalid max_width options" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{
+        Uploader.convert_params(%{
           responsive_breakpoints: [create_derived: true, max_width: "invalid"]
         })
       end
@@ -170,7 +187,7 @@ defmodule Cloudinary.UploaderTest do
 
     test "raises if the responsive_breakpoints parameter has invalid min_width options" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{
+        Uploader.convert_params(%{
           responsive_breakpoints: [create_derived: true, min_width: "invalid"]
         })
       end
@@ -178,7 +195,7 @@ defmodule Cloudinary.UploaderTest do
 
     test "raises if the responsive_breakpoints parameter has invalid bytes_step options" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{
+        Uploader.convert_params(%{
           responsive_breakpoints: [create_derived: true, bytes_step: "invalid"]
         })
       end
@@ -186,27 +203,27 @@ defmodule Cloudinary.UploaderTest do
 
     test "raises if the responsive_breakpoints parameter has invalid max_images options" do
       assert_raise ArgumentError, fn ->
-        Uploader.encode_params(%{
+        Uploader.convert_params(%{
           responsive_breakpoints: [create_derived: true, max_images: "invalid"]
         })
       end
     end
 
     test "encodes the context parameter with the context values" do
-      assert Uploader.encode_params(%{context: [alt: "My = image", caption: "Profile | image"]}) ==
-               "context=alt%3DMy+%5C%3D+image%7Ccaption%3DProfile+%5C%7C+image"
+      assert Uploader.convert_params(%{context: [alt: "My = image", caption: "Profile | image"]}) ==
+               [context: "alt=My \\= image|caption=Profile \\| image"]
     end
 
     test "encodes the metadata parameter with the metadata values" do
       metadata = [in_stock_id: 50, color_id: "[\"green\",\"red\"]"]
 
-      assert Uploader.encode_params(%{metadata: metadata}) ==
-               "metadata=in_stock_id%3D50%7Ccolor_id%3D%5B%5C%22green%5C%22%2C%5C%22red%5C%22%5D"
+      assert Uploader.convert_params(%{metadata: metadata}) ==
+               [metadata: "in_stock_id=50|color_id=[\\\"green\\\",\\\"red\\\"]"]
     end
 
     test "encodes the eager parameter with an eager transformation" do
       eager = [transformation: [crop: :fit, angle: 6, effect: :auto_contrast]]
-      assert Uploader.encode_params(%{eager: eager}) == "eager=c_fit%2Ca_6%2Ce_auto_contrast"
+      assert Uploader.convert_params(%{eager: eager}) == [eager: "c_fit,a_6,e_auto_contrast"]
     end
 
     test "encodes the eager parameter with a list of eager transformations" do
@@ -220,13 +237,13 @@ defmodule Cloudinary.UploaderTest do
         }
       ]
 
-      assert Uploader.encode_params(%{eager: eager}) ==
-               "eager=c_fit%2Ca_6%2Ce_auto_contrast%2Fpng%7Ce_art%3Aaudrey%2Fe_art%3Azorro"
+      assert Uploader.convert_params(%{eager: eager}) ==
+               [eager: "c_fit,a_6,e_auto_contrast/png|e_art:audrey/e_art:zorro"]
     end
 
     test "encodes the headers parameter with a tuple" do
-      assert Uploader.encode_params(%{headers: {"x-robots-tag", "noindex"}}) ==
-               "headers=x-robots-tag%3A+noindex"
+      assert Uploader.convert_params(%{headers: {"x-robots-tag", "noindex"}}) ==
+               [headers: "x-robots-tag: noindex"]
     end
 
     test "encodes the headers parameter with a list of tuples" do
@@ -235,8 +252,8 @@ defmodule Cloudinary.UploaderTest do
         {"link", "<https://example.com>; rel=\"preconnect\""}
       ]
 
-      assert Uploader.encode_params(%{headers: headers}) ==
-               "headers=x-robots-tag%3A+noindex%0Alink%3A+%3Chttps%3A%2F%2Fexample.com%3E%3B+rel%3D%22preconnect%22"
+      assert Uploader.convert_params(%{headers: headers}) ==
+               [headers: "x-robots-tag: noindex\nlink: <https://example.com>; rel=\"preconnect\""]
     end
   end
 end

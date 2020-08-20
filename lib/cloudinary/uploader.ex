@@ -105,51 +105,51 @@ defmodule Cloudinary.Uploader do
   end
 
   @doc """
-  Encodes upload option parameters to a form string.
+  Converts upload option parameters to form field strings.
 
   ## Example
-      iex> #{__MODULE__}.encode_params(%{async: true})
-      "async=1"
+      iex> #{__MODULE__}.convert_params(%{async: true})
+      [async: 1]
 
-      iex> #{__MODULE__}.encode_params(%{backup: false})
-      "backup=0"
+      iex> #{__MODULE__}.convert_params(%{backup: false})
+      [backup: 0]
 
-      iex> #{__MODULE__}.encode_params(%{auto_tagging: 0.88})
-      "auto_tagging=0.88"
+      iex> #{__MODULE__}.convert_params(%{auto_tagging: 0.88})
+      [auto_tagging: 0.88]
 
-      iex> #{__MODULE__}.encode_params(%{public_id: "flower"})
-      "public_id=flower"
+      iex> #{__MODULE__}.convert_params(%{public_id: "flower"})
+      [public_id: "flower"]
 
-      iex> #{__MODULE__}.encode_params(%{tags: ["dog", "cat"]})
-      "tags=dog%2Ccat"
+      iex> #{__MODULE__}.convert_params(%{tags: ["dog", "cat"]})
+      [tags: "dog,cat"]
 
-      iex> #{__MODULE__}.encode_params(%{tags: ["dog", :not_a_string]})
+      iex> #{__MODULE__}.convert_params(%{tags: ["dog", :not_a_string]})
       ** (ArgumentError) expected a string or a list of strings
 
-      iex> #{__MODULE__}.encode_params(%{format: :jpg})
-      "format=jpg"
+      iex> #{__MODULE__}.convert_params(%{format: :jpg})
+      [format: :jpg]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   transformation: [
       ...>     [width: 600, crop: :fill, effect: {:art, :frost}],
       ...>     [effect: :tint]
       ...>   ]
       ...> })
-      "transformation=w_600%2Cc_fill%2Ce_art%3Afrost%2Fe_tint"
+      [transformation: "w_600,c_fill,e_art:frost/e_tint"]
 
-      iex> #{__MODULE__}.encode_params(%{timestamp: 1592061121})
-      "timestamp=1592061121"
+      iex> #{__MODULE__}.convert_params(%{timestamp: 1592061121})
+      [timestamp: 1592061121]
 
-      iex> #{__MODULE__}.encode_params(%{timestamp: #{
+      iex> #{__MODULE__}.convert_params(%{timestamp: #{
     if Version.match?(System.version(), ">= 1.9.0") do
       "~U[2019-12-22 06:27:03Z]"
     else
       "DateTime.from_unix!(1576996023)"
     end
   }})
-      "timestamp=1576996023"
+      [timestamp: 1576996023]
   """
-  @spec encode_params(%{
+  @spec convert_params(%{
           optional(:async) => boolean,
           optional(:backup) => boolean,
           optional(:cinemagraph_analysis) => boolean,
@@ -197,9 +197,9 @@ defmodule Cloudinary.Uploader do
           optional(:categorization) => categorization | [categorization],
           optional(:eager) => eager | [eager],
           optional(:headers) => header | [header]
-        }) :: binary
-  def encode_params(params) when is_map(params) or is_list(params) do
-    params |> Enum.map(&convert_param/1) |> URI.encode_query()
+        }) :: keyword(String.Chars.t())
+  def convert_params(params) when is_map(params) or is_list(params) do
+    params |> Enum.map(&convert_param/1)
   end
 
   defguardp is_boolean_option(key)
@@ -222,7 +222,7 @@ defmodule Cloudinary.Uploader do
                    :use_filename
                  ]
 
-  @spec convert_param({atom, any}) :: {atom, String.Chars.t()}
+  @spec convert_param({atom, any}) :: {atom, iodata}
   defp convert_param({key, true}) when is_boolean_option(key), do: {key, 1}
   defp convert_param({key, false}) when is_boolean_option(key), do: {key, 0}
 
@@ -262,18 +262,19 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   The `t:atom/0` of cloudinary supported format or the `t:String.t/0` for ohter raw formats.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{allowed_formats: "txt"})
-      "allowed_formats=txt"
+      iex> #{__MODULE__}.convert_params(%{allowed_formats: "txt"})
+      [allowed_formats: "txt"]
 
-      iex> #{__MODULE__}.encode_params(%{allowed_formats: [:jpg, "txt"]})
-      "allowed_formats=jpg%2Ctxt"
+      iex> #{__MODULE__}.convert_params(%{allowed_formats: [:jpg, "txt"]})
+      [allowed_formats: "jpg,txt"]
 
-      iex> #{__MODULE__}.encode_params(%{allowed_formats: [:jww]})
+      iex> #{__MODULE__}.convert_params(%{allowed_formats: [:jww]})
       ** (ArgumentError) expected an atom of supported format, a string or a list of them
   """
   @type allowed_format :: Cloudinary.Format.t() | String.t()
-  defp convert_param({:allowed_formats, f} = param) when is_supported(f) or is_binary(f),
-    do: param
+  defp convert_param({:allowed_formats, f} = param) when is_supported(f) or is_binary(f) do
+    param
+  end
 
   defp convert_param({:allowed_formats, formats}) when is_list(formats) do
     if Enum.all?(formats, fn format -> is_supported(format) || is_binary(format) end) do
@@ -286,14 +287,14 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A `t:tuple/0` with four elements representing x, y, width and height.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{custom_coordinates: {85, 120, 220, 310}})
-      "custom_coordinates=85%2C120%2C220%2C310"
+      iex> #{__MODULE__}.convert_params(%{custom_coordinates: {85, 120, 220, 310}})
+      [custom_coordinates: "85,120,220,310"]
 
-      iex> #{__MODULE__}.encode_params(%{face_coordinates: {85, 120, 220, 310}})
-      "custom_coordinates=85%2C120%2C220%2C310"
+      iex> #{__MODULE__}.convert_params(%{face_coordinates: {85, 120, 220, 310}})
+      [face_coordinates: "85,120,220,310"]
 
-      iex> #{__MODULE__}.encode_params(%{face_coordinates: [{10, 20, 150, 130}, {213, 345, 82, 61}]})
-      "custom_coordinates=10%2C20%2C150%2C130%7C213%2C345%2C82%2C61"
+      iex> #{__MODULE__}.convert_params(%{face_coordinates: [{10, 20, 150, 130}, {213, 345, 82, 61}]})
+      [face_coordinates: "10,20,150,130,213,345,82,61"]
   """
   @type coordinates :: {number, number, number, number}
   defp convert_param({key, {x, y, width, height}})
@@ -316,8 +317,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   An access mode specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{access_mode: :authenticated})
-      "access_mode=authenticated"
+      iex> #{__MODULE__}.convert_params(%{access_mode: :authenticated})
+      [access_mode: :authenticated]
   """
   @type access_mode :: :public | :authenticated
   defp convert_param({:access_mode, access_mode} = param)
@@ -328,8 +329,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A background removal specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{background_removal: :pixelz})
-      "background_removal=pixelz"
+      iex> #{__MODULE__}.convert_params(%{background_removal: :pixelz})
+      [background_removal: :pixelz]
   """
   @type background_removal :: :cloudinary_ai | :pixelz
   defp convert_param({:background_removal, background_removal} = param)
@@ -340,8 +341,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A face detection specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{detection: :aws_rek_face})
-      "detection=aws_rek_face"
+      iex> #{__MODULE__}.convert_params(%{detection: :aws_rek_face})
+      [detection: :aws_rek_face]
   """
   @type detection :: :adv_face | :aws_rek_face
   defp convert_param({:detection, detection} = param)
@@ -352,8 +353,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A moderation specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{moderation: :webpurify})
-      "moderation=webpurify"
+      iex> #{__MODULE__}.convert_params(%{moderation: :webpurify})
+      [moderation: :webpurify]
   """
   @type moderation :: :manual | :metascan | :webpurify | :aws_rek
   defp convert_param({:moderation, moderation} = param)
@@ -364,8 +365,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A ocr specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{ocr: :adv_ocr})
-      "ocr=adv_ocr"
+      iex> #{__MODULE__}.convert_params(%{ocr: :adv_ocr})
+      [ocr: :adv_ocr]
   """
   @type ocr :: :adv_ocr
   defp convert_param({:ocr, ocr} = param) when ocr in [:adv_ocr] do
@@ -375,8 +376,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A raw convert specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{raw_convert: :aspose})
-      "raw_convert=aspose"
+      iex> #{__MODULE__}.convert_params(%{raw_convert: :aspose})
+      [raw_convert: :aspose]
   """
   @type raw_convert :: :aspose | :google_speech | :extract_text
   defp convert_param({:raw_convert, raw_convert} = param)
@@ -387,8 +388,8 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A delivery type specification.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{type: :private})
-      "type=private"
+      iex> #{__MODULE__}.convert_params(%{type: :private})
+      [type: :private]
   """
   @type type :: :upload | :private | :authenticated
   defp convert_param({:type, type} = param) when type in [:upload, :private, :authenticated] do
@@ -398,11 +399,11 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A categorization add-ons.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{categorization: :google_tagging})
-      "categorization=google_tagging"
+      iex> #{__MODULE__}.convert_params(%{categorization: :google_tagging})
+      [categorization: :google_tagging]
 
-      iex> #{__MODULE__}.encode_params(%{categorization: [:imagga_tagging, :aws_rek_tagging]})
-      "categorization=imagga_tagging%2Caws_rek_tagging"
+      iex> #{__MODULE__}.convert_params(%{categorization: [:imagga_tagging, :aws_rek_tagging]})
+      [categorization: "imagga_tagging,aws_rek_tagging"]
   """
   @type categorization ::
           :google_tagging | :google_video_tagging | :imagga_tagging | :aws_rek_tagging
@@ -429,33 +430,33 @@ defmodule Cloudinary.Uploader do
   * `:end` - When to end the asset publically available. It can be optionally specified if the
     access_type is `:anonymous`.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{access_control: [access_type: :token]})
-      "access_control=%7B%22access_type%22%3A%22anonymous%22%7D"
+      iex> #{__MODULE__}.convert_params(%{access_control: [access_type: :token]})
+      [access_control: "{\"access_type\":\"anonymous\"}"]
       
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   access_control: [
       ...>     access_type: :anonymous,
       ...>     end: ~U[2018-01-20 13:30:00Z]
       ...>   ]
       ...> })
-      "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22end%22%3A%222018-01-20T13%3A30%3A00Z%22%7D"
+      [access_control: "{\"access_type\":\"anonymous\",\"end\":\"2018-01-20T13:30:00Z\"}"]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   access_control: [
       ...>     access_type: :anonymous,
       ...>     start: ~U[2017-12-15 12:00:00Z]
       ...>   ]
       ...> })
-      "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22start%22%3A%222017-12-15T12%3A00%3A00Z%22%7D"
+      [access_control: "{\"access_type\":\"anonymous\",\"start\":\"2017-12-15T12:00:00Z\"}"]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   access_control: [
       ...>     access_type: :anonymous,
       ...>     start: ~U[2017-12-15 12:00:00Z],
       ...>     end: ~U[2018-01-20 13:30:00Z]
       ...>   ]
       ...> })
-      "access_control=%7B%22access_type%22%3A%22anonymous%22%2C%22start%22%3A%222017-12-15T12%3A00%3A00Z%22%2C%22end%22%3A%222018-01-20T13%3A30%3A00Z%22%7D"
+      [access_control: "{\"access_type\":\"anonymous\",\"start\":\"2017-12-15T12:00:00Z\",\"end\":\"2018-01-20T13:30:00Z\"}"]
   """
   @type access_control :: keyword | map
   defp convert_param({:access_control, options}) when is_list(options) do
@@ -479,7 +480,7 @@ defmodule Cloudinary.Uploader do
   * `:bytes_step` - A positive integer.
   * `:max_images` - An integer between from 3 to 200.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   responsive_breakpoints: [
       ...>     [ 
       ...>       create_derived: true, 
@@ -498,7 +499,7 @@ defmodule Cloudinary.Uploader do
       ...>     ] 
       ...>   ]
       ...> })
-      "responsive_breakpoints=%5B%7B%22create_derived%22%3Atrue%2C%22transformation%22%3A%22c_fill%2Car_16%3A9%2Cg_face%22%2C%22max_width%22%3A1000%2C%22min_width%22%3A200%2C%22bytes_step%22%3A20000%2C%22max_images%22%3A20%7D%2C%7B%22create_derived%22%3Afalse%2C%22format%22%3A%22jpg%22%2C%22transformation%22%3A%22c_fill%2Cw_0.75%2Ce_sharpen%22%2C%22max_width%22%3A2000%2C%22min_width%22%3A350%2C%22max_images%22%3A18%7D%5D"
+      [responsive_breakpoints: "[{\"create_derived\":true,\"transformation\":\"c_fill,ar_16:9,g_face\",\"max_width\":1000,\"min_width\":200,\"bytes_step\":20000,\"max_images\":20},{\"create_derived\":false,\"format\":\"jpg\",\"transformation\":\"c_fill,w_0.75,e_sharpen\":\"max_width\":2000,\"min_width\":350,\"max_images\":18}]"]
   """
   @type responsive_breakpoint :: keyword | map
   defp convert_param({:responsive_breakpoints, breakpoint}) when is_map(breakpoint) do
@@ -527,15 +528,15 @@ defmodule Cloudinary.Uploader do
 
   Each key and value can be any types `String.Chars` protocol implementation.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   context: [alt: "My image", caption: "Profile image"]
       ...> })
-      "context=alt%3DMy+image%7Ccaption%3DProfile+image"
+      [context: "alt=My image|caption=Profile image"]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   context: %{"alt" => "My=image", "caption" => "Profile|image"}
       ...> })
-      "context=alt%3DMy%5C%3Dimage%7Ccaption%3DProfile%5C%7Cimage"
+      [context: "alt=My\=image|caption=Profile\|image"]
   """
   @type context :: Enum.t()
   defp convert_param({:context, context}) when is_list(context) or is_map(context) do
@@ -552,15 +553,15 @@ defmodule Cloudinary.Uploader do
 
   Each key and value can be any types `String.Chars` protocol implementation.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   metadata: [in_stock_id: 50, color_id: "[\"green\",\"red\"]"]
       ...> })
-      "metadata=in_stock_id%3D50%7Ccolor_id%3D%5B%5C%22green%5C%22%2C%5C%22red%5C%22%5D"
+      [metadata: "in_stock_id=50|color_id=[\\\"green\\\",\\\"red\\\"]"]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   metadata: %{"in_stock_id" => 50, "color_id" => "[\"green\",\"red\"]"}
       ...> })
-      "metadata=in_stock_id%3D50%7Ccolor_id%3D%5B%5C%22green%5C%22%2C%5C%22red%5C%22%5D"
+      [metadata: "in_stock_id=50|color_id=[\\\"green\\\",\\\"red\\\"]"]
   """
   @type metadata :: Enum.t()
   defp convert_param({:metadata, metadata}) when is_list(metadata) or is_map(metadata) do
@@ -579,12 +580,12 @@ defmodule Cloudinary.Uploader do
   * `:transformation` - A `t:Cloudinaty.Transformation.t/0` or a list of transformations.
   * `:format` - An optional `t:Cloudinary.Format.t/0` the asset will be converted to.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   eager: [transformation: [crop: :fit, angle: 6, effect: :auto_contrast]]  
       ...> })
-      "eager=c_fit%2Ca_6%2Ce_auto_contrast"
+      [eager: "c_fit,a_6,e_auto_contrast"]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   eager: [[
       ...>     transformation: [crop: :fit, angle: 6, effect: :auto_contrast],
       ...>     format: :png
@@ -592,7 +593,7 @@ defmodule Cloudinary.Uploader do
       ...>     transformation: [[effect: {:art, :audrey}], [effect: {:art, :zorro}]]
       ...>   ]]
       ...> })
-      "eager=c_fit%2Ca_6%2Ce_auto_contrast%2Fpng%7Ce_art%3Aaudrey%2Fe_art%3Azorro"
+      [eager: "c_fit,a_6,e_auto_contrast/png|e_art:audrey/e_art:zorro"]
   """
   @type eager :: keyword | map
   defp convert_param({:eager, eager}) when is_map(eager) do
@@ -616,16 +617,16 @@ defmodule Cloudinary.Uploader do
   @typedoc """
   A `t:tuple/0` with two elements, the header name and the header value.
   ## Example
-      iex> #{__MODULE__}.encode_params(%{headers: {"x-robots-tag", "noindex"}})
-      "headers=x-robots-tag%3A%20noindex"
+      iex> #{__MODULE__}.convert_params(%{headers: {"x-robots-tag", "noindex"}})
+      [headers: "x-robots-tag: noindex"]
 
-      iex> #{__MODULE__}.encode_params(%{
+      iex> #{__MODULE__}.convert_params(%{
       ...>   headers: [
       ...>     {"x-robots-tag", "noindex"},
       ...>     {"link", "<https://example.com>; rel=\"preconnect\""}
       ...>   ]
       ...> })
-      "headers=x-robots-tag%3A%20noindex%0Alink%3A%20%3Chttps%3A%2F%2Fexample.com%3E%3B%20rel%3D%22preconnect%22"
+      [headers: "x-robots-tag: noindex\nlink: <https://example.com>; rel=\"preconnect\""]
   """
   @type header :: {String.t(), String.t()}
   defp convert_param({:headers, {name, value}}) when is_binary(name) and is_binary(value) do
