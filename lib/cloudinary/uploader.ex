@@ -77,7 +77,7 @@ defmodule Cloudinary.Uploader do
       |> Tesla.Multipart.add_field("api_key", options[:api_key])
 
     if Cloudinary.is_remote_url?(file) do
-      mp |> Tesla.Multipart.add_file_content(file, "file")
+      mp |> Tesla.Multipart.add_field("file", file)
     else
       mp |> Tesla.Multipart.add_file(file)
     end
