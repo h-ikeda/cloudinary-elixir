@@ -79,29 +79,21 @@ defmodule Cloudinary.Uploader do
   Generates an authentication signature.
 
   ## Example
-      iex> #{__MODULE__}.signature("allowed_formats=jpg%2Ctxt&timestamp=1597596436", "abcd1234")
-      "3926d235b29f223e9a528ed493fe53710f7610bb"
+      iex> #{__MODULE__}.signature([allowed_formats: "jpg,txt", timestamp: 1597596436], "abcd1234")
+      "8debfc9edf705cec8a424c246a6ba57cbd3e9d5a"
 
-      iex> #{__MODULE__}.signature("api_key=01234567&timestamp=1597596436&allowed_formats=jpg%2Ctxt", "abcd1234")
-      "3926d235b29f223e9a528ed493fe53710f7610bb"
+      iex> #{__MODULE__}.signature([api_key: 01234567, timestamp: 1597596436, allowed_formats: "jpg,txt"], "abcd1234")
+      "8debfc9edf705cec8a424c246a6ba57cbd3e9d5a"
   """
-  @spec signature(binary, binary) :: binary
-  def signature(params, api_secret) when is_binary(params) and is_binary(api_secret) do
+  @spec signature(keyword(String.Chars.t()), binary) :: binary
+  def signature(params, api_secret) when is_binary(api_secret) do
     params =
       params
-      |> String.split("&")
-      |> Enum.filter(
-        &(List.first(String.split(&1, "=")) not in [
-            "api_key",
-            "cloud_name",
-            "file",
-            "resource_type"
-          ])
-      )
+      |> Enum.filter(&(elem(&1, 0) not in [:api_key, :cloud_name, :file, :resource_type]))
       |> Enum.sort()
-      |> Enum.intersperse("&")
+      |> Enum.map_intersperse("&", fn {k, v} -> "#{k}=#{v}" end)
 
-    :crypto.hash(:sha, [params, api_secret]) |> Base.encode16() |> String.downcase()
+    :crypto.hash(:sha, [params | api_secret]) |> Base.encode16() |> String.downcase()
   end
 
   @doc """
