@@ -2,7 +2,17 @@ defmodule Cloudinary.Uploader do
   @moduledoc """
   The API functions used to upload assets to the cloud.
   """
+  use Tesla, only: [:post]
   import Cloudinary.Format
+
+  @doc """
+  Uploads assets to the cloud.
+  """
+  @spec upload(String.t(), keyword | map, keyword | map) :: Tesla.Env.result()
+  def upload(file, params, options) do
+    mp = build_params(file, params, options)
+    Tesla.post(upload_url(options), mp)
+  end
 
   @doc """
   Returns an URL for the uploads.
@@ -16,63 +26,70 @@ defmodule Cloudinary.Uploader do
   * `:upload_prefix` - Overrides the API base URL.
   ## Example
       iex> #{__MODULE__}.upload_url(%{cloud_name: "abcd1234"})
-      %URI{
-        host: "api.cloudinary.com",
-        path: "/v1_1/abcd1234/image/upload",
-        port: 443,
-        scheme: "https",
-        authority: "api.cloudinary.com"
-      }
+      "https://api.cloudinary.com/v1_1/abcd1234/image/upload"
 
       iex> #{__MODULE__}.upload_url(%{cloud_name: "abcd1234", resource_type: :video})
-      %URI{
-        host: "api.cloudinary.com",
-        path: "/v1_1/abcd1234/video/upload",
-        port: 443,
-        scheme: "https",
-        authority: "api.cloudinary.com"
-      }
+      "https://api.cloudinary.com/v1_1/abcd1234/video/upload"
 
       iex> #{__MODULE__}.upload_url(%{cloud_name: "abcd1234", upload_prefix: "https://example.com/api"})
-      %URI{
-        host: "example.com",
-        path: "/api/v1_1/abcd1234/image/upload",
-        port: 443,
-        scheme: "https",
-        authority: "example.com"
-      }
+      "https://example.com/api/v1_1/abcd1234/image/upload"
 
       iex> #{__MODULE__}.upload_url(%{cloud_name: "abcd1234", resource_type: :auto, upload_prefix: "https://example.com/api"})
-      %URI{
-        host: "example.com",
-        path: "/api/v1_1/abcd1234/auto/upload",
-        port: 443,
-        scheme: "https",
-        authority: "example.com"
-      }
+      "https://example.com/api/v1_1/abcd1234/auto/upload"
   """
   @spec upload_url(%{
           required(:cloud_name) => String.t(),
           optional(:upload_prefix) => String.t(),
           optional(:resource_type) => :auto | :image | :video | :raw
-        }) :: URI.t()
+        }) :: String.t()
   def upload_url(%{cloud_name: cloud_name, upload_prefix: prefix, resource_type: type})
       when is_binary(cloud_name) and is_binary(prefix) and type in [:auto, :image, :video, :raw] do
-    URI.parse("#{prefix}/v1_1/#{cloud_name}/#{type}/upload")
+    "#{prefix}/v1_1/#{cloud_name}/#{type}/upload"
   end
 
   def upload_url(%{cloud_name: cloud_name, upload_prefix: prefix})
       when is_binary(cloud_name) and is_binary(prefix) do
-    URI.parse("#{prefix}/v1_1/#{cloud_name}/image/upload")
+    "#{prefix}/v1_1/#{cloud_name}/image/upload"
   end
 
   def upload_url(%{cloud_name: cloud_name, resource_type: type})
       when is_binary(cloud_name) and type in [:auto, :image, :video, :raw] do
-    URI.parse("https://api.cloudinary.com/v1_1/#{cloud_name}/#{type}/upload")
+    "https://api.cloudinary.com/v1_1/#{cloud_name}/#{type}/upload"
   end
 
   def upload_url(%{cloud_name: cloud_name}) when is_binary(cloud_name) do
-    URI.parse("https://api.cloudinary.com/v1_1/#{cloud_name}/image/upload")
+    "https://api.cloudinary.com/v1_1/#{cloud_name}/image/upload"
+  end
+
+  @doc """
+  Builds an upload option parameters.
+  """
+  @spec build_params(String.t(), map | keyword, map) :: Tesla.Multipart.t()
+  def build_params(file, params, options) when is_binary(file) do
+    params = params |> put_timestamp() |> convert_params()
+
+    mp =
+      params
+      |> Enum.reduce(Tesla.Multipart.new(), fn {name, value}, mp ->
+        mp |> Tesla.Multipart.add_field(Atom.to_string(name), to_string(value))
+      end)
+      |> Tesla.Multipart.add_field("signature", signature(params, options[:api_secret]))
+      |> Tesla.Multipart.add_field("api_key", options[:api_key])
+
+    if Cloudinary.is_remote_url?(file) do
+      mp |> Tesla.Multipart.add_file_content(file, "file")
+    else
+      mp |> Tesla.Multipart.add_file(file)
+    end
+  end
+
+  @spec put_timestamp(map | keyword) :: map | keyword
+  defp put_timestamp(params) when is_list(params) do
+    Keyword.put_new(params, :timestamp, DateTime.utc_now())
+  end
+
+  defp put_timestamp(params) when is_map(params) do
+    Map.put_new(params, :timestamp, DateTime.utc_now())
   end
 
   @doc """
