@@ -108,7 +108,8 @@ defmodule Cloudinary.Uploader do
       params
       |> Enum.filter(&(elem(&1, 0) not in [:api_key, :cloud_name, :file, :resource_type]))
       |> Enum.sort()
-      |> Enum.map_intersperse("&", fn {k, v} -> "#{k}=#{v}" end)
+      |> Enum.map(fn {k, v} -> "#{k}=#{v}" end)
+      |> Enum.intersperse("&")
 
     :crypto.hash(:sha, [params | api_secret]) |> Base.encode16() |> String.downcase()
   end
