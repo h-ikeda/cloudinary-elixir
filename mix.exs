@@ -27,9 +27,7 @@ defmodule Cloudinary.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:castore, ">= 0.0.0"},
-      {:mint, ">= 1.0.0"},
-      {:jason, ">= 1.0.0"},
+      {:tesla, "~> 1.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :test, runtime: false},
       {:junit_formatter, "~> 3.1", only: :test},
