@@ -1,7 +1,7 @@
 %{
   "castore": {:hex, :castore, "0.1.10", "b01a007416a0ae4188e70b3b306236021b16c11474038ead7aff79dd75538c23", [:mix], [], "hexpm", "a48314e0cb45682db2ea27b8ebfa11bd6fa0a6e21a65e5772ad83ca136ff2665"},
   "certifi": {:hex, :certifi, "2.5.1", "867ce347f7c7d78563450a18a6a28a8090331e77fa02380b4a21962a65d36ee5", [:rebar3], [{:parse_trans, "~>3.3", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm", "805abd97539caf89ec6d4732c91e62ba9da0cda51ac462380bbd28ee697a8c42"},
-  "covertool": {:hex, :covertool, "2.0.3", "5d1ca6958482b9b7e718daf61f398e382426ed0f4689d5c8698a60ae3b5ba521", [:rebar3], [], "hexpm", "5c13170a55dbd6bd9efc722bc7fa32caff6f3c9cde9c692bd4a88bfc9ac4f029"},
+  "covertool": {:hex, :covertool, "2.0.4", "54acff6cddd88d28dea663cd2e1fe20dd32fcf5f5d3aff7d59031ce44ce39efa", [:rebar3], [], "hexpm", "5c9568ba4308fda2082172737c80c31d991ea83961eb10791f06106a870d0cdc"},
   "dialyxir": {:hex, :dialyxir, "1.1.0", "c5aab0d6e71e5522e77beff7ba9e08f8e02bad90dfbeffae60eaf0cb47e29488", [:mix], [{:erlex, ">= 0.2.6", [hex: :erlex, repo: "hexpm", optional: false]}], "hexpm", "07ea8e49c45f15264ebe6d5b93799d4dd56a44036cf42d0ad9c960bc266c0b9a"},
   "earmark": {:hex, :earmark, "1.4.4", "4821b8d05cda507189d51f2caeef370cf1e18ca5d7dfb7d31e9cafe6688106a4", [:mix], [], "hexpm", "1f93aba7340574847c0f609da787f0d79efcab51b044bb6e242cae5aca9d264d"},
   "earmark_parser": {:hex, :earmark_parser, "1.4.12", "b245e875ec0a311a342320da0551da407d9d2b65d98f7a9597ae078615af3449", [:mix], [], "hexpm", "711e2cc4d64abb7d566d43f54b78f7dc129308a63bc103fbd88550d2174b3160"},
